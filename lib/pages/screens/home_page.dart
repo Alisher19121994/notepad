@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:notepad/components/compnents.dart';
+import 'package:notepad/hiveServices/hive_service.dart';
+import 'package:notepad/models/notes.dart';
 import 'package:notepad/pages/screens/new_task_page.dart';
 import 'package:notepad/pages/screens/sub_home_page.dart';
 
-import '../../widgets/home.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
   static const String id = 'HomePage';
 
   @override
@@ -16,54 +17,82 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Map<String, dynamic>> _allUser = [
-    {"id": 1, "name": "Andy", "age": 29},
-    {"id": 2, "name": "Aragon", "age": 40},
-    {"id": 3, "name": "Bob", "age": 5},
-    {"id": 4, "name": "Barbara", "age": 35},
-    {"id": 5, "name": "Candy", "age": 21},
-    {"id": 6, "name": "Colin", "age": 55},
-    {"id": 7, "name": "Audra", "age": 30},
-    {"id": 8, "name": "Banana", "age": 14},
-    {"id": 9, "name": "Caversky", "age": 100},
-    {"id": 10, "name": "Alisher", "age": 32},
-    {"id": 11, "name": "Abbos", "age": 32},
-    {"id": 12, "name": "Muhammad Ali", "age": 32},
-    {"id": 13, "name": "Becky", "age": 32},
-    {"id": 13, "name": "Becky", "age": 32},
-    {"id": 13, "name": "Becky", "age": 32},
-    {"id": 13, "name": "Becky", "age": 32},
-    {"id": 13, "name": "Becky", "age": 32},
-    {"id": 13, "name": "Becky", "age": 32},
-  ];
 
-  // This list holds the data for the list view
-  List<Map<String, dynamic>> _foundUsers = [];
+  late String description;
+  late String dateOfTask;
+  late String timeOfTask;
+  HiveService hiveService = HiveService();
+  Notes notes  = Notes();
+  //final notePadBox = Hive.box('notepad');
+  TextEditingController descriptionController = TextEditingController();
+  //
+  // final List<Map<String, dynamic>> _allUser = [
+  //   {"id": 1, "name": "Andy", "age": 29},
+  //   {"id": 2, "name": "Aragon", "age": 40},
+  //   {"id": 3, "name": "Bob", "age": 5},
+  //   {"id": 4, "name": "Barbara", "age": 35},
+  //   {"id": 5, "name": "Candy", "age": 21},
+  //   {"id": 6, "name": "Colin", "age": 55},
+  //   {"id": 7, "name": "Audra", "age": 30},
+  //   {"id": 8, "name": "Banana", "age": 14},
+  //   {"id": 9, "name": "Caversky", "age": 100},
+  //   {"id": 10, "name": "Alisher", "age": 32},
+  //   {"id": 11, "name": "Abbos", "age": 32},
+  //   {"id": 12, "name": "Muhammad Ali", "age": 32},
+  //   {"id": 13, "name": "Becky", "age": 32},
+  //   {"id": 13, "name": "Becky", "age": 32},
+  //   {"id": 13, "name": "Becky", "age": 32},
+  //   {"id": 13, "name": "Becky", "age": 32},
+  //   {"id": 13, "name": "Becky", "age": 32},
+  //   {"id": 13, "name": "Becky", "age": 32},
+  // ];
+
+ //  List<Map<dynamic, dynamic>> itemsList = [];
+ // // List<Map<dynamic, dynamic>> items = [];
+ //  //List<Map<String, dynamic>> _foundUsers = [];
+ //
+ //  void _refreshItem()async{
+ //   // var item;
+ //    final data = notePadBox.keys.map((key) {
+ //      final item = notePadBox.get(key);
+ //        return {'key': key, 'description':item['description']};
+ //    }).toList();
+ //    // items.add(item);
+ //   // _runFilter('',it:item);
+ //
+ //    setState(() {
+ //      itemsList = data.reversed.toList();
+ //      print('itemsList: $itemsList');
+ //    });
+ //  }
+  // void _runFilter(String enteredKeyword,{dynamic it}) {
+  //   List<Map<String, dynamic>> results = [];
+  //   if (enteredKeyword.isEmpty) {
+  //     //results = _allUser;
+  //     results = it;
+  //   } else {
+  //     results = it.where((user) => user["description"].toLowerCase().contains(enteredKeyword.toLowerCase())).toList();
+  //     //results = _allUser.where((user) => user["title"].toLowerCase().contains(enteredKeyword.toLowerCase())).toList();
+  //   }
+  //   setState(() {
+  //     itemsList = results;
+  //   });
+  // }
+  //
+  // Future <void>_createItem(Map<dynamic, dynamic> map) async {
+  //   await notePadBox.add(map);
+  //   _refreshItem();
+  //   print('shoppingBox length: ${notePadBox.length}');
+  // }
+
 
   @override
   initState() {
-    _foundUsers = _allUser;
+    // _foundUsers = _allUser;
     super.initState();
+    //_refreshItem();
+    initialData();
   }
-
-  // This function is called whenever the text field changes
-  void _runFilter(String enteredKeyword) {
-    List<Map<String, dynamic>> results = [];
-    if (enteredKeyword.isEmpty) {
-      // if the search field is empty or only contains white-space, we'll display all users
-      results = _allUser;
-    } else {
-      results = _allUser
-          .where((user) =>
-              user["name"].toLowerCase().contains(enteredKeyword.toLowerCase()))
-          .toList();
-      // we use the toLowerCase() method to make it case-insensitive
-    }
-    setState(() {
-      _foundUsers = results;
-    });
-  }
-
 
   void showDialog(){
     NAlertDialog(
@@ -71,22 +100,86 @@ class _HomePageState extends State<HomePage> {
       content: Container(
         margin: const EdgeInsets.only(top: 18.0),
         child: TextFormField(
+          controller: descriptionController,
           style: const TextStyle(color: Colors.black),
           decoration: const InputDecoration(
+              hintText: 'Enter Quick Task Here:',
               contentPadding: EdgeInsets.all(5.0),
-              labelText: 'Enter Quick Task Here:',
               border: OutlineInputBorder()),
-          onChanged: (value) => {
-
-          }
         ),
       ),
       actions: <Widget>[
-        TextButton(child: const Text("Close"), onPressed: () => Navigator.pop(context)),
-        TextButton(child: const Text("Save"), onPressed: () => Navigator.pop(context)),
+        InkWell(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child: Container(
+            height: 38.0,
+              margin: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(4.0),
+            decoration: BoxDecoration(
+                color:const Color(0xffff0000),
+              borderRadius: BorderRadius.circular(4.0),
+              border: Border.all(width: 1.4,color: const Color(0xffff0000), )
+            ),
+              child:  const Center(child: Text("Close",style: TextStyle(color:Colors.white,fontSize: 18,fontWeight: FontWeight.bold),))),
+        ),
+        InkWell(
+          onTap: (){
+            // _createItem({
+            //   'description': descriptionController.text
+            // });
+            // descriptionController.text = '';
+            // //  descriptionController.text = description,
+            // if(descriptionController != null){
+            // Navigator.of(context).pop();
+            // }
+            // // HiveService.storeNotes(notes!)
+
+            saveNewTask();
+          },
+          child: Container(
+              height: 38.0,
+            margin: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(4.0),
+            decoration: BoxDecoration(
+              color: const Color(0xff0abf53),
+                borderRadius: BorderRadius.circular(4.0),
+                border: Border.all(width: 1.4,color: const Color(0xff0abf53), )
+            ),
+            child:  const Center(child: Text("Save",style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold)))
+          ),
+        ),
       ],
     ).show(context);
   }
+///////////////////////////////
+
+  void initialData(){
+    notes  = Notes(description: descriptionController.text);
+    if(hiveService.box.get('notesItem') == null){
+      hiveService.storeNotes(notes);
+    }else{
+      hiveService.loadNotes();
+    }
+  }
+
+  void saveNewTask(){
+     notes  = Notes(description: descriptionController.text);
+    setState(() {
+      hiveService.notePadList.add(notes);
+      print('hiveService.notePadList: ${hiveService.notePadList}');
+      descriptionController.clear();
+    });
+  }
+
+  void deleteTask(int index){
+    setState(() {
+       hiveService.notePadList.removeAt(index);
+       print( hiveService.notePadList.removeAt(index));
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -239,61 +332,200 @@ class _HomePageState extends State<HomePage> {
           child: Column(
            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 1.0,right: 1.0,top: 6),
-                child: SizedBox(
-                  height: 36,
-                  child: TextFormField(
-                    style: const TextStyle(color: Colors.black),
-                    decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.all(1.0),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.black,
-                        ),
-                        labelText: 'Search notepad',
-                        border: OutlineInputBorder()),
-                    onChanged: (value) => _runFilter(value),
-                  ),
-                ),
-              ),
-              _foundUsers.isNotEmpty
+              // Padding(
+              //   padding: const EdgeInsets.only(left: 1.0,right: 1.0,top: 6),
+              //   child: SizedBox(
+              //     height: 36,
+              //     child: TextFormField(
+              //       style: const TextStyle(color: Colors.black),
+              //       decoration: const InputDecoration(
+              //           contentPadding: EdgeInsets.all(1.0),
+              //           prefixIcon: Icon(
+              //             Icons.search,
+              //             color: Colors.black,
+              //           ),
+              //           labelText: 'Search notepad',
+              //           border: OutlineInputBorder()),
+              //       onChanged: (value) => _runFilter(value),
+              //     ),
+              //   ),
+              // ),
+              hiveService.notePadList.isNotEmpty
                   ? Container(
                     margin: const EdgeInsets.only(bottom: 80.0),
                     child: ListView.builder(
                     shrinkWrap: true,
                     primary: false,
-                    itemCount: _foundUsers.length,
+                    itemCount: hiveService.notePadList.length,
                     itemBuilder: (context, index) {
-                      return listOfNotes(context,index);
-                      // return SizedBox(
-                      //   height: 90,
-                      //   child: Card(
-                      //     key: ValueKey(_foundUsers[index]["id"]),
-                      //     color: Colors.blue,
-                      //     elevation: 4,
-                      //     margin: const EdgeInsets.symmetric(vertical: 10),
-                      //     child: ListTile(
-                      //       leading: Text(
-                      //         _foundUsers[index]["id"].toString(),
-                      //         style: const TextStyle(
-                      //             fontSize: 24, color: Colors.white),
-                      //       ),
-                      //       title: Text(_foundUsers[index]['name'],
-                      //           style: TextStyle(color: Colors.white)),
-                      //       subtitle: Text(
-                      //           '${_foundUsers[index]["age"].toString()} years old',
-                      //           style: TextStyle(color: Colors.white)),
-                      //     ),
-                      //   ),
-                      // );
+                      return InkWell(
+                        onTap: (){
+                          Navigator.pushNamed(context, SubHomePage.id);
+                        },
+                        child: Container(
+                          height: size.height*0.18,
+                          width: size.width*0.6,
+                          padding: const EdgeInsets.all(10.0),
+                          margin: const EdgeInsets.only(right: 4.0,left: 4.0,top: 6.0),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.0),
+                              color: const Color(0xffbdd3f1)
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: SizedBox(
+                                  height: size.height,
+                                  width: double.infinity,
+                                  child: Text( notes.description.toString(),
+                                    style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 19.0),),
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        child: Text(notes.dateOfTask??'',
+                                          style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),),
+                                      ),
+                                      const SizedBox(width: 8.0),
+                                      SizedBox(
+                                        child: Text(notes.timeOfTask??'',
+                                          style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),),
+                                      ),
+                                    ],
+                                  ),
+                                 Row(
+                                 children: [
+                                   Container(
+                                     decoration: BoxDecoration(
+                                       borderRadius: BorderRadius.circular(100.0),
+                                       border: Border.all(width: 1.4,color: Colors.black),
+                                       //color: Colors.white
+                                     ),
+                                     child: IconButton(
+                                         onPressed: (){
+
+                                         },
+                                         icon: const Icon(Icons.edit,color: Colors.black,size: 24,)),
+                                   ),
+                                   const SizedBox(width: 5.0),
+                                   Container(
+                                     decoration: BoxDecoration(
+                                       borderRadius: BorderRadius.circular(100.0),
+                                       border: Border.all(width: 1.4,color: Colors.black),
+                                       //color: Colors.white
+                                     ),
+                                     child: IconButton(
+                                         onPressed: (){
+                                           deleteTask(index);
+                                         },
+                                         icon: const Icon(Icons.delete,color: Colors.black,size: 24,)),
+                                   )
+                                 ],
+                               )
+                                ],
+                              ),
+
+                            ],
+                          ),
+
+                        ),
+                      );
+                      /***/
+                     // final currentItem = hiveService.notePadList[index];
+                     // print('currentItem -> description ->: ${currentItem['description']}');
+                     // return InkWell(
+                     //    onTap: (){
+                     //      Navigator.pushNamed(context, SubHomePage.id);
+                     //    },
+                     //    child: Container(
+                     //      height: size.height*0.18,
+                     //      width: size.width*0.6,
+                     //      padding: const EdgeInsets.all(10.0),
+                     //      margin: const EdgeInsets.only(right: 4.0,left: 4.0,top: 6.0),
+                     //      decoration: BoxDecoration(
+                     //          borderRadius: BorderRadius.circular(8.0),
+                     //          color: const Color(0xffbdd3f1)
+                     //      ),
+                     //      child: Column(
+                     //        mainAxisAlignment: MainAxisAlignment.end,
+                     //        crossAxisAlignment: CrossAxisAlignment.start,
+                     //        children: [
+                     //          Expanded(
+                     //            child: SizedBox(
+                     //              height: size.height,
+                     //              width: double.infinity,
+                     //              child: Text(currentItem['description'].toString(),
+                     //                style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 19.0),),
+                     //            ),
+                     //          ),
+                     //
+                     //          // Row(
+                     //          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                     //          //   children: [
+                     //          //     Row(
+                     //          //       children: [
+                     //          //         SizedBox(
+                     //          //           child: Text(currentItem['timeOfDay'].toString(),
+                     //          //             style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),),
+                     //          //         ),
+                     //          //         const SizedBox(width: 8.0),
+                     //          //         SizedBox(
+                     //          //           child: Text(currentItem['date'].toString(),
+                     //          //             style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),),
+                     //          //         ),
+                     //          //       ],
+                     //          //     ),
+                     //          //     Container(
+                     //          //       decoration: BoxDecoration(
+                     //          //         borderRadius: BorderRadius.circular(100.0),
+                     //          //         border: Border.all(width: 1.4,color: Colors.black),
+                     //          //         //color: Colors.white
+                     //          //       ),
+                     //          //       child: IconButton(
+                     //          //           onPressed: (){
+                     //          //
+                     //          //           },
+                     //          //           icon: const Icon(Icons.edit,color: Colors.black,size: 24,)),
+                     //          //     ),
+                     //          //     Container(
+                     //          //       decoration: BoxDecoration(
+                     //          //         borderRadius: BorderRadius.circular(100.0),
+                     //          //         border: Border.all(width: 1.4,color: Colors.black),
+                     //          //         //color: Colors.white
+                     //          //       ),
+                     //          //       child: IconButton(
+                     //          //           onPressed: (){
+                     //          //             deleteTask(index);
+                     //          //           },
+                     //          //           icon: const Icon(Icons.delete,color: Colors.black,size: 24,)),
+                     //          //     )
+                     //          //   ],
+                     //          // ),
+                     //
+                     //        ],
+                     //      ),
+                     //
+                     //    ),
+                     //  );
+
                     }
                 ),
               )
-                  : const Text(
-                'No results found',
-                style: TextStyle(fontSize: 24),
+                  : SizedBox(
+                    height: size.height * 0.8,
+                    child: const Center(
+                      child: Text(
+                      'Notes have not created yet',
+                       style: TextStyle(fontSize: 24),
               ),
+                    ),
+                  ),
             ],
           ),
         ),
@@ -312,4 +544,6 @@ class _HomePageState extends State<HomePage> {
 
     );
   }
+
+
 }

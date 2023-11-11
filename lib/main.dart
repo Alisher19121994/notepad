@@ -7,6 +7,7 @@ import 'package:notepad/pages/screens/sub_home_page.dart';
 import 'package:notepad/splash/splash_page.dart';
 
 void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('notepad');
   runApp(const MyApp());

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:ndialog/ndialog.dart';
 
 class NewTaskPage extends StatefulWidget {
@@ -10,6 +11,11 @@ class NewTaskPage extends StatefulWidget {
 
 class _NewTaskPageState extends State<NewTaskPage> {
   final formKey = GlobalKey<FormState>();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController dateTimePickerController = TextEditingController();
+  TextEditingController timePickerController = TextEditingController();
+  final notePadBox = Hive.box('notepad');
+  List<Map<dynamic, dynamic>> itemsList = [];
 
   void showDialog(){
     NAlertDialog(
@@ -23,6 +29,28 @@ class _NewTaskPageState extends State<NewTaskPage> {
             onPressed: () => Navigator.pop(context)),
       ],
     ).show(context);
+  }
+
+  void _refreshItem()async{
+    // var item;
+    final data = notePadBox.keys.map((key) {
+      final item = notePadBox.get(key);
+      return {'key': key, 'description':item['description'],'date':item['date'],
+        'timeOfDay':item['timeOfDay'],};
+    }).toList();
+    // items.add(item);
+    // _runFilter('',it:item);
+
+    setState(() {
+      itemsList = data.reversed.toList();
+      print('itemsList: $itemsList');
+    });
+  }
+
+  Future <void>_createItem(Map<dynamic, dynamic> map) async {
+    await notePadBox.add(map);
+    _refreshItem();
+    print('notePadBox length: ${notePadBox.length}');
   }
 
   @override
@@ -43,52 +71,15 @@ class _NewTaskPageState extends State<NewTaskPage> {
       ),
       body: Form(
         key: formKey,
-        child: SingleChildScrollView(
-          child: Container(
+        child: Container(
             height: size.height,
             padding: const EdgeInsets.only(left: 14.0,right: 6.0,top: 20.0),
             child: Column(
               children: [
-                SizedBox(
-                 height: size.height*0.2,
-                 child: SingleChildScrollView(
-                   child: Column(
+                Column(
                      crossAxisAlignment: CrossAxisAlignment.start,
                      children: [
                        const Text('What is to be done?',style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),),
-                       Row(
-                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                       crossAxisAlignment: CrossAxisAlignment.center,
-                       children: [
-                         SizedBox(
-                           width: size.width * 0.8,
-                           child: TextField(
-                               minLines: 1,
-                               maxLines: 1,
-                               keyboardType: TextInputType.multiline,
-                               decoration: const InputDecoration(
-                                 label:Text('Enter Title Here:',style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.normal),),
-                               ),
-                               onChanged: (value)=>{
-
-                               }
-                           ),
-                         ),
-                         Container(
-                           decoration: BoxDecoration(
-                             borderRadius: BorderRadius.circular(100.0),
-                             border: Border.all(width: 1.4,color: Colors.black12),
-                             //color: Colors.white
-                           ),
-                           child: IconButton(
-                               onPressed:(){
-
-                               },
-                               icon:const Icon(Icons.mic,color: Colors.black,size: 24,)
-                               ),
-                         )
-                       ],
-                     ),
                        Row(
                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                          crossAxisAlignment: CrossAxisAlignment.center,
@@ -96,15 +87,13 @@ class _NewTaskPageState extends State<NewTaskPage> {
                            SizedBox(
                              width: size.width * 0.8,
                              child: TextField(
+                               controller: descriptionController,
                                  minLines: 1,
                                  maxLines: 10,
                                  keyboardType: TextInputType.multiline,
                                  decoration: const InputDecoration(
-                                   label:Text('Enter Task Here:',style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.normal),),
+                                   hintText: 'Enter Task Here:',
                                  ),
-                                 onChanged: (value)=>{
-
-                                 }
                              ),
                            ),
                            Container(
@@ -122,12 +111,9 @@ class _NewTaskPageState extends State<NewTaskPage> {
                            )
                          ],
                        ),
-
                      ],
                    ),
-                 )
-               ),
-                const SizedBox(height: 20.0,),
+                const SizedBox(height: 27.0,),
                 SizedBox(
                     height: size.height*0.1,
                     child: SingleChildScrollView(
@@ -149,6 +135,15 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                     border: Border.all(width: 1.4,color: Colors.black12),
                                     color: Colors.white
                                 ),
+                                 child:TextField(
+                                   controller: dateTimePickerController,
+                                   minLines: 1,
+                                   maxLines: 1,
+                                   keyboardType: TextInputType.multiline,
+                                   decoration: const InputDecoration(
+                                     hintText: 'Date',
+                                   ),
+                                 ),
                           ),
                                Container(
                                  decoration: BoxDecoration(
@@ -157,7 +152,9 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                      //color: Colors.white
                                  ),
                                  child: IconButton(
-                                     onPressed: (){},
+                                     onPressed: (){
+                                       showsDatePicker();
+                                     },
                                      icon: const Icon(Icons.calendar_today)
                                  ),
                                )
@@ -168,7 +165,6 @@ class _NewTaskPageState extends State<NewTaskPage> {
                       ),
                     )
                 ),
-              //  const SizedBox(height: 10.0,),
                 SizedBox(
                     height: size.height*0.1,
                     child: SingleChildScrollView(
@@ -190,6 +186,15 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                     border: Border.all(width: 1.4,color: Colors.black12),
                                     color: Colors.white
                                 ),
+                                child:TextField(
+                                  controller: timePickerController,
+                                  minLines: 1,
+                                  maxLines: 1,
+                                  keyboardType: TextInputType.multiline,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Time',
+                                  ),
+                                ),
                               ),
                               Container(
                                 decoration: BoxDecoration(
@@ -198,7 +203,9 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                   //color: Colors.white
                                 ),
                                 child: IconButton(
-                                    onPressed: (){},
+                                    onPressed: (){
+                                      showsTimePicker();
+                                    },
                                     icon: const Icon(Icons.timer_outlined)
                                 ),
                               )
@@ -209,24 +216,62 @@ class _NewTaskPageState extends State<NewTaskPage> {
                       ),
                     )
                 ),
-
-
               ],
             ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        elevation: 0.0,
-        backgroundColor: const Color(0xff0abf53),
-        onPressed: () {
-          showDialog();
-        },
-        child: const Center(
-          child: Icon(Icons.check,size: 28,color: Colors.white,),
-        ),
-      ),
+      floatingActionButton: Align(
+          alignment: const Alignment(1.0, 0.9),
+          child: FloatingActionButton(
+            backgroundColor:  const Color(0xff0abf53),
+            onPressed: (){
+              _createItem({
+                'description': descriptionController.text
+              });
+              descriptionController.text = '';
+              if(descriptionController != null){
+                showDialog();
+              }
+            },
+            child: const Center(
+              child: Icon(Icons.check,color: Colors.white,size: 28,),
+            ),
+          )),
 
     );
+  }
+  Future<void> showsDatePicker()async {
+    DateTime? dateTime =  await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2020),
+        lastDate: DateTime(2042)
+    );
+    if(dateTime != null){
+      setState(() {
+        dateTimePickerController.text = '';
+        dateTimePickerController.text = dateTime.toString().split(' ')[0];
+        _createItem({
+          'date': dateTimePickerController.text
+        });
+
+      });
+    }
+  }
+  Future<void> showsTimePicker()async {
+    TimeOfDay? timeOfDay =  await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now()
+    );
+    if(timeOfDay != null){
+      setState(() {
+        timePickerController.text = '';
+        timePickerController.text = timeOfDay.toString();
+        _createItem({
+          'timeOfDay': timePickerController.text
+        });
+
+      });
+    }
   }
 }

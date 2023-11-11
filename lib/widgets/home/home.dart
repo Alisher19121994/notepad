@@ -1,10 +1,10 @@
 import 'package:app_popup_menu/app_popup_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:notepad/models/notes.dart';
+import '../../pages/screens/sub_home_page.dart';
 
-import '../pages/screens/sub_home_page.dart';
-
-Widget listOfNotes(BuildContext context, int index){
+Widget listOfNotes(BuildContext context, int index, Notes notes){
   var size = MediaQuery.of(context).size;
   return InkWell(
     onTap: (){
@@ -27,8 +27,8 @@ Widget listOfNotes(BuildContext context, int index){
             child: SizedBox(
               height: size.height,
               width: double.infinity,
-              child: const Text('Birinchi loyhaga tayyorgarlik korishim kerak',
-                style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 19.0),),
+              child: Text(notes.description??'',
+                style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 19.0),),
             ),
           ),
 
@@ -37,14 +37,14 @@ Widget listOfNotes(BuildContext context, int index){
             children: [
               Row(
                 children: [
-                  const SizedBox(
-                    child: Text('7:00',
-                      style: TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),),
+                   SizedBox(
+                    child: Text(notes.timeOfTask??'',
+                      style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),),
                   ),
                   const SizedBox(width: 8.0),
-                  const SizedBox(
-                    child: Text('23/11/2023',
-                      style: TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),),
+                   SizedBox(
+                    child: Text(notes.dateOfTask??'',
+                      style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),),
                   ),
                 ],
               ),
