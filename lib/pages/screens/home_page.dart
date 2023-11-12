@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:logger/logger.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:notepad/components/compnents.dart';
 import 'package:notepad/hiveServices/hive_service.dart';
@@ -6,10 +8,9 @@ import 'package:notepad/models/notes.dart';
 import 'package:notepad/pages/screens/new_task_page.dart';
 import 'package:notepad/pages/screens/sub_home_page.dart';
 
-
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
   static const String id = 'HomePage';
 
   @override
@@ -17,14 +18,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  late String description;
-  late String dateOfTask;
-  late String timeOfTask;
   HiveService hiveService = HiveService();
-  Notes notes  = Notes();
-  //final notePadBox = Hive.box('notepad');
   TextEditingController descriptionController = TextEditingController();
+  Notes notes = Notes();
+  var logger = Logger();
+
   //
   // final List<Map<String, dynamic>> _allUser = [
   //   {"id": 1, "name": "Andy", "age": 29},
@@ -47,24 +45,24 @@ class _HomePageState extends State<HomePage> {
   //   {"id": 13, "name": "Becky", "age": 32},
   // ];
 
- //  List<Map<dynamic, dynamic>> itemsList = [];
- // // List<Map<dynamic, dynamic>> items = [];
- //  //List<Map<String, dynamic>> _foundUsers = [];
- //
- //  void _refreshItem()async{
- //   // var item;
- //    final data = notePadBox.keys.map((key) {
- //      final item = notePadBox.get(key);
- //        return {'key': key, 'description':item['description']};
- //    }).toList();
- //    // items.add(item);
- //   // _runFilter('',it:item);
- //
- //    setState(() {
- //      itemsList = data.reversed.toList();
- //      print('itemsList: $itemsList');
- //    });
- //  }
+  //  List<Map<dynamic, dynamic>> itemsList = [];
+  // // List<Map<dynamic, dynamic>> items = [];
+  //  //List<Map<String, dynamic>> _foundUsers = [];
+  //
+  //  void _refreshItem()async{
+  //   // var item;
+  //    final data = notePadBox.keys.map((key) {
+  //      final item = notePadBox.get(key);
+  //        return {'key': key, 'description':item['description']};
+  //    }).toList();
+  //    // items.add(item);
+  //   // _runFilter('',it:item);
+  //
+  //    setState(() {
+  //      itemsList = data.reversed.toList();
+  //      print('itemsList: $itemsList');
+  //    });
+  //  }
   // void _runFilter(String enteredKeyword,{dynamic it}) {
   //   List<Map<String, dynamic>> results = [];
   //   if (enteredKeyword.isEmpty) {
@@ -85,16 +83,15 @@ class _HomePageState extends State<HomePage> {
   //   print('shoppingBox length: ${notePadBox.length}');
   // }
 
-
   @override
   initState() {
     // _foundUsers = _allUser;
     super.initState();
     //_refreshItem();
-    initialData();
+
   }
 
-  void showDialog(){
+  void showDialog() {
     NAlertDialog(
       dialogStyle: DialogStyle(titleDivider: true),
       content: Container(
@@ -110,76 +107,56 @@ class _HomePageState extends State<HomePage> {
       ),
       actions: <Widget>[
         InkWell(
-          onTap: (){
+          onTap: () {
             Navigator.pop(context);
           },
           child: Container(
-            height: 38.0,
+              height: 38.0,
               margin: const EdgeInsets.all(8.0),
               padding: const EdgeInsets.all(4.0),
-            decoration: BoxDecoration(
-                color:const Color(0xffff0000),
-              borderRadius: BorderRadius.circular(4.0),
-              border: Border.all(width: 1.4,color: const Color(0xffff0000), )
-            ),
-              child:  const Center(child: Text("Close",style: TextStyle(color:Colors.white,fontSize: 18,fontWeight: FontWeight.bold),))),
+              decoration: BoxDecoration(
+                  color: const Color(0xffff0000),
+                  borderRadius: BorderRadius.circular(4.0),
+                  border: Border.all(
+                    width: 1.4,
+                    color: const Color(0xffff0000),
+                  )),
+              child: const Center(
+                  child: Text(
+                "Close",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ))),
         ),
         InkWell(
-          onTap: (){
-            // _createItem({
-            //   'description': descriptionController.text
-            // });
-            // descriptionController.text = '';
-            // //  descriptionController.text = description,
-            // if(descriptionController != null){
-            // Navigator.of(context).pop();
-            // }
-            // // HiveService.storeNotes(notes!)
-
-            saveNewTask();
+          onTap: () {
+            notes = Notes(description: descriptionController.text);
+            HiveService.storeNotes(Notes(description: notes.description));
+            descriptionController.clear();
           },
           child: Container(
               height: 38.0,
-            margin: const EdgeInsets.all(8.0),
-            padding: const EdgeInsets.all(4.0),
-            decoration: BoxDecoration(
-              color: const Color(0xff0abf53),
-                borderRadius: BorderRadius.circular(4.0),
-                border: Border.all(width: 1.4,color: const Color(0xff0abf53), )
-            ),
-            child:  const Center(child: Text("Save",style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold)))
-          ),
+              margin: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(4.0),
+              decoration: BoxDecoration(
+                  color: const Color(0xff0abf53),
+                  borderRadius: BorderRadius.circular(4.0),
+                  border: Border.all(
+                    width: 1.4,
+                    color: const Color(0xff0abf53),
+                  )),
+              child: const Center(
+                  child: Text("Save",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold)))),
         ),
       ],
     ).show(context);
   }
-///////////////////////////////
-
-  void initialData(){
-    notes  = Notes(description: descriptionController.text);
-    if(hiveService.box.get('notesItem') == null){
-      hiveService.storeNotes(notes);
-    }else{
-      hiveService.loadNotes();
-    }
-  }
-
-  void saveNewTask(){
-     notes  = Notes(description: descriptionController.text);
-    setState(() {
-      hiveService.notePadList.add(notes);
-      print('hiveService.notePadList: ${hiveService.notePadList}');
-      descriptionController.clear();
-    });
-  }
-
-  void deleteTask(int index){
-    setState(() {
-       hiveService.notePadList.removeAt(index);
-       print( hiveService.notePadList.removeAt(index));
-    });
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -192,27 +169,32 @@ class _HomePageState extends State<HomePage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-          Row(
-            children: [
-              SizedBox(
-                  height: size.height * 0.1,
-                  width: size.width * 0.1,
-                  child: const Image(
-                    image: AssetImage(ImageApp.todo),
-                  )),
-              const SizedBox(width: 12.0),
-              const Text(
-                'NotePad',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-            IconButton(onPressed: (){
-              showDialog();
-            }, icon: const Icon(Icons.quick_contacts_mail_outlined,color: Colors.white,))
+            Row(
+              children: [
+                SizedBox(
+                    height: size.height * 0.1,
+                    width: size.width * 0.1,
+                    child: const Image(
+                      image: AssetImage(ImageApp.todo),
+                    )),
+                const SizedBox(width: 12.0),
+                const Text(
+                  'NotePad',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
+            IconButton(
+                onPressed: () {
+                  showDialog();
+                },
+                icon: const Icon(
+                  Icons.quick_contacts_mail_outlined,
+                  color: Colors.white,
+                ))
           ],
         ),
         actions: [
@@ -326,224 +308,166 @@ class _HomePageState extends State<HomePage> {
                   ])
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 4.0,right: 4.0),
-        child: SingleChildScrollView(
-          child: Column(
-           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Padding(
-              //   padding: const EdgeInsets.only(left: 1.0,right: 1.0,top: 6),
-              //   child: SizedBox(
-              //     height: 36,
-              //     child: TextFormField(
-              //       style: const TextStyle(color: Colors.black),
-              //       decoration: const InputDecoration(
-              //           contentPadding: EdgeInsets.all(1.0),
-              //           prefixIcon: Icon(
-              //             Icons.search,
-              //             color: Colors.black,
-              //           ),
-              //           labelText: 'Search notepad',
-              //           border: OutlineInputBorder()),
-              //       onChanged: (value) => _runFilter(value),
-              //     ),
-              //   ),
-              // ),
-              hiveService.notePadList.isNotEmpty
-                  ? Container(
-                    margin: const EdgeInsets.only(bottom: 80.0),
-                    child: ListView.builder(
-                    shrinkWrap: true,
-                    primary: false,
-                    itemCount: hiveService.notePadList.length,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: (){
-                          Navigator.pushNamed(context, SubHomePage.id);
-                        },
-                        child: Container(
-                          height: size.height*0.18,
-                          width: size.width*0.6,
-                          padding: const EdgeInsets.all(10.0),
-                          margin: const EdgeInsets.only(right: 4.0,left: 4.0,top: 6.0),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                              color: const Color(0xffbdd3f1)
+      body: FutureBuilder(
+        future: Hive.openBox<Notes>('notepad'),
+        builder:
+            (BuildContext context, AsyncSnapshot<Box<Notes>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            final box = snapshot.data;
+            if (box!.isEmpty) {
+              return  Center(
+                  child:SizedBox(
+                    height: size.height * 0.45,
+                    width: size.width * 0.65,
+                      child: Column(
+                        children:  const [
+                          Image(image: AssetImage(ImageApp.unnamed),),
+                          SizedBox(height: 16.0),
+                          Text('Notes have not created yet!',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+                        ],
+                      )
+                  )
+              );
+            } else {
+              return ListView.builder(
+                itemCount: box.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final data = box.getAt(index)!;
+                  return InkWell(
+                    onTap: (){
+                      Navigator.pushNamed(context, SubHomePage.id);
+                    },
+                    child: Container(
+                      height: size.height*0.18,
+                      width: size.width*0.6,
+                      padding: const EdgeInsets.all(10.0),
+                      margin: const EdgeInsets.only(right: 4.0,left: 4.0,top: 6.0),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          color: const Color(0xffbdd3f1)
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: size.height,
+                              width: double.infinity,
+                              child: Text(data.description??'',
+                                style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 19.0),),
+                            ),
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          const SizedBox(height:22.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(
-                                child: SizedBox(
-                                  height: size.height,
-                                  width: double.infinity,
-                                  child: Text( notes.description.toString(),
-                                    style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 19.0),),
-                                ),
-                              ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                        child: Text(notes.dateOfTask??'',
-                                          style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),),
-                                      ),
-                                      const SizedBox(width: 8.0),
-                                      SizedBox(
-                                        child: Text(notes.timeOfTask??'',
-                                          style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),),
-                                      ),
-                                    ],
+                                  SizedBox(
+                                    child: Text(data.timeOfTask??'',
+                                      style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),overflow: TextOverflow.ellipsis,),
                                   ),
-                                 Row(
-                                 children: [
-                                   Container(
-                                     decoration: BoxDecoration(
-                                       borderRadius: BorderRadius.circular(100.0),
-                                       border: Border.all(width: 1.4,color: Colors.black),
-                                       //color: Colors.white
-                                     ),
-                                     child: IconButton(
-                                         onPressed: (){
-
-                                         },
-                                         icon: const Icon(Icons.edit,color: Colors.black,size: 24,)),
-                                   ),
-                                   const SizedBox(width: 5.0),
-                                   Container(
-                                     decoration: BoxDecoration(
-                                       borderRadius: BorderRadius.circular(100.0),
-                                       border: Border.all(width: 1.4,color: Colors.black),
-                                       //color: Colors.white
-                                     ),
-                                     child: IconButton(
-                                         onPressed: (){
-                                           deleteTask(index);
-                                         },
-                                         icon: const Icon(Icons.delete,color: Colors.black,size: 24,)),
-                                   )
-                                 ],
-                               )
+                                  const SizedBox(width: 8.0),
+                                  SizedBox(
+                                    child:  Text(data.dateOfTask??'',
+                                        style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),overflow: TextOverflow.ellipsis),
+                                  ),
                                 ],
                               ),
 
+                              Row(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100.0),
+                                      border: Border.all(width: 1.4,color: Colors.black),
+                                      //color: Colors.white
+                                    ),
+                                    child: IconButton(
+                                        onPressed: (){
+                                       //   Navigator.pushNamed(context, NewTaskPage.id);
+                                        },
+                                        icon: const Icon(Icons.edit,color: Colors.black,size: 24,)),
+                                  ),
+                                  const SizedBox(width: 5.0),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100.0),
+                                      border: Border.all(width: 1.4,color: Colors.black),
+                                      //color: Colors.white
+                                    ),
+                                    child: IconButton(
+                                        onPressed: (){
+                                         // HiveService.box.delete(index);
+                                        },
+                                        icon: const Icon(Icons.delete,color: Colors.black,size: 24,)),
+                                  )
+                                ],
+                              )
                             ],
-                          ),
+                          )
+                        ],
+                      ),
 
-                        ),
-                      );
-                      /***/
-                     // final currentItem = hiveService.notePadList[index];
-                     // print('currentItem -> description ->: ${currentItem['description']}');
-                     // return InkWell(
-                     //    onTap: (){
-                     //      Navigator.pushNamed(context, SubHomePage.id);
-                     //    },
-                     //    child: Container(
-                     //      height: size.height*0.18,
-                     //      width: size.width*0.6,
-                     //      padding: const EdgeInsets.all(10.0),
-                     //      margin: const EdgeInsets.only(right: 4.0,left: 4.0,top: 6.0),
-                     //      decoration: BoxDecoration(
-                     //          borderRadius: BorderRadius.circular(8.0),
-                     //          color: const Color(0xffbdd3f1)
-                     //      ),
-                     //      child: Column(
-                     //        mainAxisAlignment: MainAxisAlignment.end,
-                     //        crossAxisAlignment: CrossAxisAlignment.start,
-                     //        children: [
-                     //          Expanded(
-                     //            child: SizedBox(
-                     //              height: size.height,
-                     //              width: double.infinity,
-                     //              child: Text(currentItem['description'].toString(),
-                     //                style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 19.0),),
-                     //            ),
-                     //          ),
-                     //
-                     //          // Row(
-                     //          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                     //          //   children: [
-                     //          //     Row(
-                     //          //       children: [
-                     //          //         SizedBox(
-                     //          //           child: Text(currentItem['timeOfDay'].toString(),
-                     //          //             style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),),
-                     //          //         ),
-                     //          //         const SizedBox(width: 8.0),
-                     //          //         SizedBox(
-                     //          //           child: Text(currentItem['date'].toString(),
-                     //          //             style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),),
-                     //          //         ),
-                     //          //       ],
-                     //          //     ),
-                     //          //     Container(
-                     //          //       decoration: BoxDecoration(
-                     //          //         borderRadius: BorderRadius.circular(100.0),
-                     //          //         border: Border.all(width: 1.4,color: Colors.black),
-                     //          //         //color: Colors.white
-                     //          //       ),
-                     //          //       child: IconButton(
-                     //          //           onPressed: (){
-                     //          //
-                     //          //           },
-                     //          //           icon: const Icon(Icons.edit,color: Colors.black,size: 24,)),
-                     //          //     ),
-                     //          //     Container(
-                     //          //       decoration: BoxDecoration(
-                     //          //         borderRadius: BorderRadius.circular(100.0),
-                     //          //         border: Border.all(width: 1.4,color: Colors.black),
-                     //          //         //color: Colors.white
-                     //          //       ),
-                     //          //       child: IconButton(
-                     //          //           onPressed: (){
-                     //          //             deleteTask(index);
-                     //          //           },
-                     //          //           icon: const Icon(Icons.delete,color: Colors.black,size: 24,)),
-                     //          //     )
-                     //          //   ],
-                     //          // ),
-                     //
-                     //        ],
-                     //      ),
-                     //
-                     //    ),
-                     //  );
-
-                    }
-                ),
-              )
-                  : SizedBox(
-                    height: size.height * 0.8,
-                    child: const Center(
-                      child: Text(
-                      'Notes have not created yet',
-                       style: TextStyle(fontSize: 24),
-              ),
                     ),
-                  ),
-            ],
-          ),
-        ),
+                  );
+                  // return ListTile(
+                  //   title: Text(data.description ?? ''),
+                  //   subtitle: Text(data.timeOfTask ?? ''),
+                  // );
+                },
+              );
+            }
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
+      // body: Padding(
+      //   padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+      //   child: SingleChildScrollView(
+      //     child: Column(
+      //       children: [
+      //         // Padding(
+      //         //   padding: const EdgeInsets.only(left: 1.0,right: 1.0,top: 6),
+      //         //   child: SizedBox(
+      //         //     height: 36,
+      //         //     child: TextFormField(
+      //         //       style: const TextStyle(color: Colors.black),
+      //         //       decoration: const InputDecoration(
+      //         //           contentPadding: EdgeInsets.all(1.0),
+      //         //           prefixIcon: Icon(
+      //         //             Icons.search,
+      //         //             color: Colors.black,
+      //         //           ),
+      //         //           labelText: 'Search notepad',
+      //         //           border: OutlineInputBorder()),
+      //         //       onChanged: (value) => _runFilter(value),
+      //         //     ),
+      //         //   ),
+      //         // ),
+      //
+      //       ],
+      //     ),
+      //   ),
+      // ),
       floatingActionButton: Align(
           alignment: const Alignment(0.9, 1.0),
           child: FloatingActionButton(
-              backgroundColor: Colors.white,
-              onPressed: (){
-                Navigator.pushNamed(context, NewTaskPage.id);
-              },
-              child: const Center(
-                child: Icon(Icons.add,color: Colors.blue,size: 28,),
+            backgroundColor: Colors.white,
+            onPressed: () {
+              Navigator.pushNamed(context, NewTaskPage.id);
+            },
+            child: const Center(
+              child: Icon(
+                Icons.add,
+                color: Colors.blue,
+                size: 28,
               ),
+            ),
           )),
-
     );
   }
-
 
 }
