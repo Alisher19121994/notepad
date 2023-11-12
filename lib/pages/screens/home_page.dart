@@ -18,8 +18,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  HiveService hiveService = HiveService();
   TextEditingController descriptionController = TextEditingController();
+  HiveService hiveService = HiveService();
   Notes notes = Notes();
   var logger = Logger();
 
@@ -310,8 +310,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: FutureBuilder(
         future: Hive.openBox<Notes>('notepad'),
-        builder:
-            (BuildContext context, AsyncSnapshot<Box<Notes>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<Box<Notes>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final box = snapshot.data;
             if (box!.isEmpty) {
@@ -344,7 +343,8 @@ class _HomePageState extends State<HomePage> {
                       margin: const EdgeInsets.only(right: 4.0,left: 4.0,top: 6.0),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8.0),
-                          color: const Color(0xffbdd3f1)
+                          color: const Color(0xfff5deb3)
+                         // color: const Color(0xffbdd3f1)
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -362,46 +362,66 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    child: Text(data.timeOfTask??'',
-                                      style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),overflow: TextOverflow.ellipsis,),
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  SizedBox(
-                                    child:  Text(data.dateOfTask??'',
-                                        style: const TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 17.0),overflow: TextOverflow.ellipsis),
-                                  ),
-                                ],
+                              const SizedBox(
+                                  height: 20.0,
+                                  child: Center(child: Text('Deadline: ',style: TextStyle(color: Colors.red,fontSize: 18,fontWeight: FontWeight.bold),),)
                               ),
-
+                              Container(
+                                padding: const EdgeInsets.all(2.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4.0),
+                                  border: Border.all(width: 1.4,color: Colors.red),
+                                  color: Colors.red
+                                ),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: size.width * 0.20,
+                                      child: Text(data.timeOfTask??'', style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 17.0),overflow: TextOverflow.ellipsis,),
+                                    ),
+                                    const SizedBox(width: 2),
+                                    const Text('-', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 24.0),overflow: TextOverflow.ellipsis),
+                                    const SizedBox(width: 2),
+                                    SizedBox(
+                                      width: size.width * 0.25,
+                                      child:  Text(data.dateOfTask??'',
+                                            style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,
+                                                fontSize: 17.0),overflow: TextOverflow.ellipsis),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 2),
                               Row(
                                 children: [
                                   Container(
+                                    height: size.height * 0.04,
+                                    width: size.width * 0.10,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100.0),
+                                      borderRadius: BorderRadius.circular(5.0),
                                       border: Border.all(width: 1.4,color: Colors.black),
                                       //color: Colors.white
                                     ),
                                     child: IconButton(
                                         onPressed: (){
-                                       //   Navigator.pushNamed(context, NewTaskPage.id);
+                                          Navigator.pushNamed(context, NewTaskPage.id);
                                         },
-                                        icon: const Icon(Icons.edit,color: Colors.black,size: 24,)),
+                                        icon: const Icon(Icons.edit,color: Colors.black,size: 20,)),
                                   ),
                                   const SizedBox(width: 5.0),
                                   Container(
+                                    height: size.height * 0.04,
+                                    width: size.width * 0.10,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100.0),
+                                      borderRadius: BorderRadius.circular(5.0),
                                       border: Border.all(width: 1.4,color: Colors.black),
                                       //color: Colors.white
                                     ),
                                     child: IconButton(
                                         onPressed: (){
-                                         // HiveService.box.delete(index);
+                                          box.deleteAt(index);
                                         },
-                                        icon: const Icon(Icons.delete,color: Colors.black,size: 24,)),
+                                        icon: const Icon(Icons.delete,color: Colors.black,size: 20,)),
                                   )
                                 ],
                               )
@@ -457,7 +477,7 @@ class _HomePageState extends State<HomePage> {
           child: FloatingActionButton(
             backgroundColor: Colors.white,
             onPressed: () {
-              Navigator.pushNamed(context, NewTaskPage.id);
+              Navigator.of(context).pushNamed(NewTaskPage.id);
             },
             child: const Center(
               child: Icon(

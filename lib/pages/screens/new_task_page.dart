@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:logger/logger.dart';
 import 'package:ndialog/ndialog.dart';
+import '../../hiveServices/hive_service.dart';
+import '../../models/notes.dart';
 
 class NewTaskPage extends StatefulWidget {
   const NewTaskPage({super.key});
@@ -14,8 +16,12 @@ class _NewTaskPageState extends State<NewTaskPage> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController dateTimePickerController = TextEditingController();
   TextEditingController timePickerController = TextEditingController();
-  final notePadBox = Hive.box('notepad');
-  List<Map<dynamic, dynamic>> itemsList = [];
+  // late String dateTimePickerController;
+  // late String timePickerController;
+  HiveService hiveService = HiveService();
+  Notes notes = Notes();
+  var logger = Logger();
+
 
   void showDialog(){
     NAlertDialog(
@@ -31,27 +37,27 @@ class _NewTaskPageState extends State<NewTaskPage> {
     ).show(context);
   }
 
-  void _refreshItem()async{
-    // var item;
-    final data = notePadBox.keys.map((key) {
-      final item = notePadBox.get(key);
-      return {'key': key, 'description':item['description'],'date':item['date'],
-        'timeOfDay':item['timeOfDay'],};
-    }).toList();
-    // items.add(item);
-    // _runFilter('',it:item);
-
-    setState(() {
-      itemsList = data.reversed.toList();
-      print('itemsList: $itemsList');
-    });
-  }
-
-  Future <void>_createItem(Map<dynamic, dynamic> map) async {
-    await notePadBox.add(map);
-    _refreshItem();
-    print('notePadBox length: ${notePadBox.length}');
-  }
+  // void _refreshItem()async{
+  //   // var item;
+  //   final data = notePadBox.keys.map((key) {
+  //     final item = notePadBox.get(key);
+  //     return {'key': key, 'description':item['description'],'date':item['date'],
+  //       'timeOfDay':item['timeOfDay'],};
+  //   }).toList();
+  //   // items.add(item);
+  //   // _runFilter('',it:item);
+  //
+  //   setState(() {
+  //     itemsList = data.reversed.toList();
+  //     print('itemsList: $itemsList');
+  //   });
+  // }
+  //
+  // Future <void>_createItem(Map<dynamic, dynamic> map) async {
+  //   await notePadBox.add(map);
+  //   _refreshItem();
+  //   print('notePadBox length: ${notePadBox.length}');
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +82,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
             padding: const EdgeInsets.only(left: 14.0,right: 6.0,top: 20.0),
             child: Column(
               children: [
+                //#enter to be done
                 Column(
                      crossAxisAlignment: CrossAxisAlignment.start,
                      children: [
@@ -94,6 +101,13 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                  decoration: const InputDecoration(
                                    hintText: 'Enter Task Here:',
                                  ),
+                               // onChanged: (value){
+                               //   setState(() {
+                               //   //  descriptionController = value as TextEditingController;
+                               //     notes = Notes(description: descriptionController.text);
+                               //     descriptionController.clear();
+                               //   });
+                               // },
                              ),
                            ),
                            Container(
@@ -114,6 +128,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
                      ],
                    ),
                 const SizedBox(height: 27.0,),
+                //#Due date
                 SizedBox(
                     height: size.height*0.1,
                     child: SingleChildScrollView(
@@ -143,6 +158,12 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                    decoration: const InputDecoration(
                                      hintText: 'Date',
                                    ),
+                                   // onChanged: (value){
+                                   //   setState(() {
+                                   //     dateTimePickerController = value;
+                                   //   //  dateTimePickerController.clear();
+                                   //   });
+                                   // },
                                  ),
                           ),
                                Container(
@@ -152,8 +173,22 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                      //color: Colors.white
                                  ),
                                  child: IconButton(
-                                     onPressed: (){
+                                     onPressed: ()async{
                                        showsDatePicker();
+                                      //  DateTime? dateTime =  await showDatePicker(
+                                      //      context: context,
+                                      //      initialDate: DateTime.now(),
+                                      //      firstDate: DateTime(2020),
+                                      //      lastDate: DateTime(2042)
+                                      //  );
+                                      //  if(dateTime != null){
+                                      //    setState(() {
+                                      //      dateTimePickerController = dateTime.toString();
+                                      //      // dateTimePickerController = dateTime.month.toString();
+                                      //      // dateTimePickerController = dateTime.year.toString();
+                                      //
+                                      //    });
+                                      //  }
                                      },
                                      icon: const Icon(Icons.calendar_today)
                                  ),
@@ -165,6 +200,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
                       ),
                     )
                 ),
+                //#Due time
                 SizedBox(
                     height: size.height*0.1,
                     child: SingleChildScrollView(
@@ -194,6 +230,12 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                   decoration: const InputDecoration(
                                     hintText: 'Time',
                                   ),
+                                  // onChanged: (value){
+                                  //   setState(() {
+                                  //     timePickerController = value;
+                                  //    // timePickerController.clear();
+                                  //   });
+                                  // },
                                 ),
                               ),
                               Container(
@@ -225,11 +267,8 @@ class _NewTaskPageState extends State<NewTaskPage> {
           child: FloatingActionButton(
             backgroundColor:  const Color(0xff0abf53),
             onPressed: (){
-              _createItem({
-                'description': descriptionController.text
-              });
-              descriptionController.text = '';
-              if(descriptionController != null){
+              var storeNotes = HiveService.storeNotes(Notes(description: descriptionController.text,dateOfTask: dateTimePickerController.text,timeOfTask:timePickerController.text));
+              if(storeNotes != null){
                 showDialog();
               }
             },
@@ -249,11 +288,12 @@ class _NewTaskPageState extends State<NewTaskPage> {
     );
     if(dateTime != null){
       setState(() {
+        // dateTimePickerController = dateTime.day.toString();
+        // dateTimePickerController = dateTime.month.toString();
+        // dateTimePickerController = dateTime.year.toString();
+        //dateTimePickerController.text = dateTime.toString().split(' ')[0];
         dateTimePickerController.text = '';
-        dateTimePickerController.text = dateTime.toString().split(' ')[0];
-        _createItem({
-          'date': dateTimePickerController.text
-        });
+
 
       });
     }
@@ -265,11 +305,9 @@ class _NewTaskPageState extends State<NewTaskPage> {
     );
     if(timeOfDay != null){
       setState(() {
+        timePickerController.text = timeOfDay.hour.toString();
         timePickerController.text = '';
-        timePickerController.text = timeOfDay.toString();
-        _createItem({
-          'timeOfDay': timePickerController.text
-        });
+
 
       });
     }
