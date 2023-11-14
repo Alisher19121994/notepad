@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:logger/logger.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:notepad/components/compnents.dart';
+import 'package:notepad/controller/control_home.dart';
 import 'package:notepad/hiveServices/hive_service.dart';
 import 'package:notepad/models/notes.dart';
 import 'package:notepad/pages/screens/new_task_page.dart';
 import 'package:notepad/pages/screens/sub_home_page.dart';
+import 'package:notepad/pages/screens/update_page.dart';
+import 'package:provider/provider.dart';
+//import 'package:share_plus/share_plus.dart';
+
+import '../../main.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -303,33 +308,79 @@ class _HomePageState extends State<HomePage> {
 
   void showSwitchModeDialog() {
     NAlertDialog(
+      backgroundColor: Colors.black12,
       dialogStyle: DialogStyle(titleDivider: true),
-      content: Container(
-        margin: const EdgeInsets.only(top: 18.0),
-        child:LiteRollingSwitch(
-          //initial value
-          value: true,
-          textOn: 'White',
-          textOff: 'Dark',
-          colorOn: Colors.black12,
-          colorOff: Colors.black,
-          iconOn: Icons.dark_mode_outlined,
-          iconOff: Icons.dark_mode,
-          textSize: 16.0,
-          onChanged: (bool state) {
-            //Use it to manage the different states
-            print('Current State of SWITCH IS: $state');
-          }, onTap: (){
-
-        }, onDoubleTap: (){
-
-        }, onSwipe: (){
-
-        },
+      content: Stack(
+   children: [
+    // AnimatedSwitcher(
+    //   duration: const Duration(milliseconds: 500),
+    //   child: Image.asset(
+    //     Theme.of(context).brightness == Brightness.light
+    //         ? 'assets/images/light.png'
+    //         : 'assets/images/dark.png',
+    //     key: Key(Theme.of(context).brightness.toString()),
+    //   ),
+    // ),
+    SizedBox(
+      height: 120,
+      child: Positioned.fill(
+        top: 20,
+        child: Align(
+          alignment: Alignment.center,
+          child:
+          Consumer<HomeController>(builder: (context, provider, child) {
+            return DropdownButton<String>(
+              value: provider.currentTheme,
+              items: [
+                //Light, dark, and system
+                DropdownMenuItem<String>(
+                  value: 'light',
+                  child: Text(
+                    'Light',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                DropdownMenuItem<String>(
+                  value: 'dark',
+                  child: Text(
+                    'Dark',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                DropdownMenuItem<String>(
+                  value: 'system',
+                  child: Text(
+                    'System',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+              ],
+              onChanged: (String? value) {
+                provider.changeTheme(value ?? 'system');
+              },
+            );
+          }),
         ),
-
       ),
-    ).show(context);
+    ),
+  ],
+)).show(context);
+  }
+
+  void shareThisApp()async{
+   // Share.share('https://play.google.com/store/apps/details?id=com.gennis.teacherapp', subject: 'Subscribe and Rate us!');
+  }
+
+  void bottomSheetsDialog(){
+    BottomSheet(
+      onClosing: () {  },
+      builder: (BuildContext context) {
+        return Card(
+
+        );
+      },
+
+    );
   }
 
   @override
@@ -371,112 +422,107 @@ class _HomePageState extends State<HomePage> {
                 ))
           ],
         ),
-        actions: [
-          PopupMenuButton(
-              offset: const Offset(0, 40),
-              elevation: 2,
-              iconSize: 22,
-              itemBuilder: (BuildContext context) => [
-                    PopupMenuItem<int>(
-                      height: 50,
-                      value: 3,
-                      child: SizedBox(
-                        height: 50,
-                        width: double.infinity,
-                        child: InkWell(
-                          onTap: () {
-                            showSwitchModeDialog();
-
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (_) => const NewTaskPage()));
-                          },
-                          child: Row(
-                            children: const <Widget>[
-                              Icon(
-                                Icons.mode_night,
-                                size: 17,
-                                color: Colors.black,
-                              ),
-                              SizedBox(width: 5),
-                              // Optional spacing between icon and text
-                              Text(
-                                'Mode',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.normal),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    PopupMenuItem<int>(
-                      height: 50,
-                      value: 3,
-                      child: SizedBox(
-                        height: 50,
-                        width: double.infinity,
-                        child: InkWell(
-                          onTap: () {
-                            showLanguageDialog();
-                          },
-                          child: Row(
-                            children: const <Widget>[
-                              Icon(
-                                Icons.language,
-                                size: 17,
-                                color: Colors.black,
-                              ),
-                              SizedBox(width: 5),
-                              // Optional spacing between icon and text
-                              Text(
-                                'Language',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.normal),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    PopupMenuItem<int>(
-                      height: 50,
-                      value: 3,
-                      child: SizedBox(
-                        height: 50,
-                        width: double.infinity,
-                        child: InkWell(
-                          onTap: () {
-
-                          },
-                          child: Row(
-                            children: const <Widget>[
-                              Icon(
-                                Icons.share,
-                                size: 17,
-                                color: Colors.black,
-                              ),
-                              SizedBox(width: 5),
-                              // Optional spacing between icon and text
-                              Text(
-                                'Share this app',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.normal),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ])
-        ],
+        // actions: [
+        //   PopupMenuButton(
+        //       offset: const Offset(0, 40),
+        //       elevation: 2,
+        //       iconSize: 22,
+        //       itemBuilder: (BuildContext context) => [
+        //             PopupMenuItem<int>(
+        //               height: 50,
+        //               value: 3,
+        //               child: SizedBox(
+        //                 height: 50,
+        //                 width: double.infinity,
+        //                 child: InkWell(
+        //                   onTap: () {
+        //                     showSwitchModeDialog();
+        //                   },
+        //                   child: const Row(
+        //                     children: <Widget>[
+        //                       Icon(
+        //                         Icons.mode_night,
+        //                         size: 17,
+        //                         color: Colors.black,
+        //                       ),
+        //                       SizedBox(width: 5),
+        //                       // Optional spacing between icon and text
+        //                       Text(
+        //                         'Mode',
+        //                         style: TextStyle(
+        //                             color: Colors.black,
+        //                             fontSize: 17,
+        //                             fontWeight: FontWeight.normal),
+        //                       ),
+        //                     ],
+        //                   ),
+        //                 ),
+        //               ),
+        //             ),
+        //             PopupMenuItem<int>(
+        //               height: 50,
+        //               value: 3,
+        //               child: SizedBox(
+        //                 height: 50,
+        //                 width: double.infinity,
+        //                 child: InkWell(
+        //                   onTap: () {
+        //                     showLanguageDialog();
+        //                   },
+        //                   child: Row(
+        //                     children: const <Widget>[
+        //                       Icon(
+        //                         Icons.language,
+        //                         size: 17,
+        //                         color: Colors.black,
+        //                       ),
+        //                       SizedBox(width: 5),
+        //                       // Optional spacing between icon and text
+        //                       Text(
+        //                         'Language',
+        //                         style: TextStyle(
+        //                             color: Colors.black,
+        //                             fontSize: 17,
+        //                             fontWeight: FontWeight.normal),
+        //                       ),
+        //                     ],
+        //                   ),
+        //                 ),
+        //               ),
+        //             ),
+        //             PopupMenuItem<int>(
+        //               height: 50,
+        //               value: 3,
+        //               child: SizedBox(
+        //                 height: 50,
+        //                 width: double.infinity,
+        //                 child: InkWell(
+        //                   onTap: () {
+        //                     shareThisApp();
+        //                   },
+        //                   child: const Row(
+        //                     children: <Widget>[
+        //                       Icon(
+        //                         Icons.share,
+        //                         size: 17,
+        //                         color: Colors.black,
+        //                       ),
+        //                       SizedBox(width: 5),
+        //                       // Optional spacing between icon and text
+        //                       Text(
+        //                         'Share this app',
+        //                         style: TextStyle(
+        //                             color: Colors.black,
+        //                             fontSize: 17,
+        //                             fontWeight: FontWeight.normal),
+        //                       ),
+        //                     ],
+        //                   ),
+        //                 ),
+        //               ),
+        //             ),
+        //           ])
+        // ],
       ),
       body: FutureBuilder(
         future: Hive.openBox<Notes>('notepad'),
@@ -488,8 +534,8 @@ class _HomePageState extends State<HomePage> {
                   child:SizedBox(
                     height: size.height * 0.45,
                     width: size.width * 0.65,
-                      child: Column(
-                        children:  const [
+                      child: const Column(
+                        children:  [
                           Image(image: AssetImage(ImageApp.unnamed),),
                           SizedBox(height: 16.0),
                           Text('Notes have not created yet!',style: TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 18.0),),
@@ -499,6 +545,8 @@ class _HomePageState extends State<HomePage> {
               );
             } else {
               return ListView.builder(
+                reverse: false,
+                shrinkWrap: true,
                 itemCount: box.length,
                 itemBuilder: (BuildContext context, int index) {
                   final data = box.getAt(index)!;
@@ -572,21 +620,21 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Container(
-                                height: size.height * 0.04,
-                                width: size.width * 0.10,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  border: Border.all(width: 1.4,color: Colors.black),
-                                  //color: Colors.white
-                                ),
-                                child: IconButton(
-                                    onPressed: (){
-                                      // Navigator.pushNamed(context, NewTaskPage.id);
-                                    },
-                                    icon: const Icon(Icons.share,color: Colors.black,size: 20,)),
-                              ),
-                              const SizedBox(width: 18.0),
+                              // Container(
+                              //   height: size.height * 0.04,
+                              //   width: size.width * 0.10,
+                              //   decoration: BoxDecoration(
+                              //     borderRadius: BorderRadius.circular(5.0),
+                              //     border: Border.all(width: 1.4,color: Colors.black),
+                              //     //color: Colors.white
+                              //   ),
+                              //   child: IconButton(
+                              //       onPressed: (){
+                              //         // Navigator.pushNamed(context, NewTaskPage.id);
+                              //       },
+                              //       icon: const Icon(Icons.share,color: Colors.black,size: 20,)),
+                              // ),
+                              // const SizedBox(width: 18.0),
                               Container(
                                 height: size.height * 0.04,
                                 width: size.width * 0.10,
@@ -599,10 +647,11 @@ class _HomePageState extends State<HomePage> {
                                     onPressed: (){
                                       print( data.description);
                                       Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                                        return NewTaskPage(
+                                        return UpdatePage(
                                           descriptionOfTask: data.description??'',
                                           timeOfTask: data.timeOfTask??'',
-                                          dateOfTask: data.dateOfTask??'',);
+                                          dateOfTask: data.dateOfTask??'',
+                                          index: index,);
                                       }));
                                     },
                                     icon: const Icon(Icons.edit,color: Colors.black,size: 20,)),

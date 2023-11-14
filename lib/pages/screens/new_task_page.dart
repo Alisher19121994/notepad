@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:ndialog/ndialog.dart';
+import 'package:speech_to_text_google_dialog/speech_to_text_google_dialog.dart';
 import '../../hiveServices/hive_service.dart';
 import '../../models/notes.dart';
 
 class NewTaskPage extends StatefulWidget {
-  String descriptionOfTask;
-  String timeOfTask;
-  String dateOfTask;
-
-  NewTaskPage(
-      {super.key,
-        required this.descriptionOfTask,
-        required this.timeOfTask,
-        required this.dateOfTask});
+ const NewTaskPage({super.key,});
   static const String id = 'NewTaskPage';
   @override
   State<NewTaskPage> createState() => _NewTaskPageState();
@@ -24,6 +17,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController dateTimePickerController = TextEditingController();
   TextEditingController timePickerController = TextEditingController();
+  String? result;
   // late String dateTimePickerController;
   // late String timePickerController;
   HiveService hiveService = HiveService();
@@ -31,18 +25,16 @@ class _NewTaskPageState extends State<NewTaskPage> {
   var logger = Logger();
 
 
-  void showDialog(){
-    NAlertDialog(
-      dialogStyle: DialogStyle(titleDivider: true),
-      content: Container(
-        margin: const EdgeInsets.only(top: 18.0),
-        child: const Text("New Task",style: TextStyle(fontSize: 17,fontWeight: FontWeight.normal),),
-      ),
-      actions: <Widget>[
-        TextButton(child: const Text("Successfully Saved",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-            onPressed: () => Navigator.pop(context)),
-      ],
-    ).show(context);
+  void showSuccessfulDialog(){
+    showDialog(
+        context: context,
+        builder: (context){
+          return const AlertDialog(
+            backgroundColor: Colors.greenAccent,
+            title: Text("New Task",style: TextStyle(color:Colors.black,fontSize: 17,fontWeight: FontWeight.normal),),
+            content:  Text("Successfully Saved",style: TextStyle(color:Colors.black,fontSize: 20,fontWeight: FontWeight.bold),),
+          );
+        });
   }
 
   // void _refreshItem()async{
@@ -115,10 +107,28 @@ class _NewTaskPageState extends State<NewTaskPage> {
                              decoration: BoxDecoration(
                                borderRadius: BorderRadius.circular(100.0),
                                border: Border.all(width: 1.4,color: Colors.black12),
-                               //color: Colors.white
                              ),
                              child: IconButton(
-                                 onPressed:(){
+                                 onPressed:()async{
+                                   await SpeechToTextGoogleDialog.getInstance().showGoogleDialog(onTextReceived: (data) {
+                                     setState(() {
+                                       descriptionController.text = data.toString();
+                                     });
+                                   });
+
+
+                                   // if (!isServiceAvailable) {
+                                   //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                   //     content: const Text('Service is not available'),
+                                   //     backgroundColor: Colors.red,
+                                   //     behavior: SnackBarBehavior.floating,
+                                   //     margin: EdgeInsets.only(
+                                   //       bottom: MediaQuery.of(context).size.height - 100,
+                                   //       left: 16,
+                                   //       right: 16,
+                                   //     ),
+                                   //   ));
+                                   // }
 
                                  },
                                  icon:const Icon(Icons.mic,color: Colors.black,size: 24,)
@@ -259,15 +269,15 @@ class _NewTaskPageState extends State<NewTaskPage> {
           child: FloatingActionButton(
             backgroundColor:  const Color(0xff0abf53),
             onPressed: (){
-              widget.descriptionOfTask = descriptionController.text;
-              widget.timeOfTask = timePickerController.text;
-              widget.dateOfTask = dateTimePickerController.text;
+              // widget.descriptionOfTask = descriptionController.text;
+              // widget.timeOfTask = timePickerController.text;
+              // widget.dateOfTask = dateTimePickerController.text;
               var storeNotes = HiveService.storeNotes(Notes(description: descriptionController.text,
                   dateOfTask: dateTimePickerController.text,timeOfTask:timePickerController.text));
               // var updateNotes = HiveService.updateNotes(Notes(description: widget.descriptionOfTask,
               //     dateOfTask:  widget.timeOfTask,timeOfTask: widget.dateOfTask),0);
               if(storeNotes != null ){
-                showDialog();
+                showSuccessfulDialog();
               }
 
 
@@ -281,38 +291,5 @@ class _NewTaskPageState extends State<NewTaskPage> {
   }
 
 
-  //
-  // Future<void> showsDatePicker()async {
-  //   DateTime? dateTime =  await showDatePicker(
-  //       context: context,
-  //       initialDate: DateTime.now(),
-  //       firstDate: DateTime(2020),
-  //       lastDate: DateTime(2042)
-  //   );
-  //   if(dateTime != null){
-  //     setState(() {
-  //       // dateTimePickerController = dateTime.day.toString();
-  //       // dateTimePickerController = dateTime.month.toString();
-  //       // dateTimePickerController = dateTime.year.toString();
-  //       //dateTimePickerController.text = dateTime.toString().split(' ')[0];
-  //       dateTimePickerController.text = '';
-  //
-  //
-  //     });
-  //   }
-  // }
-  // Future<void> showsTimePicker()async {
-  //   TimeOfDay? timeOfDay =  await showTimePicker(
-  //       context: context,
-  //       initialTime: TimeOfDay.now()
-  //   );
-  //   if(timeOfDay != null){
-  //     setState(() {
-  //       timePickerController.text = timeOfDay.toString().split(' ')[0];
-  //       timePickerController.text = '';
-  //
-  //
-  //     });
-  //   }
-  // }
+
 }

@@ -4,15 +4,35 @@ import 'package:notepad/models/adapter.dart';
 import 'package:notepad/pages/screens/home_page.dart';
 import 'package:notepad/pages/screens/new_task_page.dart';
 import 'package:notepad/pages/screens/sub_home_page.dart';
+import 'package:notepad/pages/screens/update_page.dart';
 import 'package:notepad/splash/splash_page.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+
+import 'controller/control_home.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDir = await getApplicationDocumentsDirectory();
   await Hive.initFlutter(appDocumentDir.path);
   Hive.registerAdapter(NotesAdapter());
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider<HomeController>(
+      create: (_) => HomeController()..initialize(),
+      child: const MyApp(),
+    ),
+  );
+  // SharedPreferences.getInstance().then((prefs) {
+  //   var isDarkTheme = prefs.getBool("darkTheme") ?? false;
+  //   return runApp(
+  //     ChangeNotifierProvider<HomeController>(
+  //       child: const MyApp(),
+  //       create: (BuildContext context) {
+  //         return HomeController();
+  //       },
+  //     ),
+  //   );
+  // });
 }
 
 class MyApp extends StatelessWidget {
@@ -20,14 +40,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const SplashPage(),
-      routes: {
-        HomePage.id:(context)=> const HomePage(),
-        NewTaskPage.id:(context)=>  NewTaskPage(descriptionOfTask: '', timeOfTask: '', dateOfTask: '',),
-        SubHomePage.id:(context)=> SubHomePage(description: '', time: '', dates: '',),
-      },
-    );
+    return Consumer<HomeController>(
+        builder: (context, value, child) {
+          return MaterialApp(
+            theme: ThemeData.light(),
+            darkTheme: ThemeData.dark(), // standard dark theme
+            themeMode: value.themeMode,
+            home: const SplashPage(),
+            routes: {
+              HomePage.id:(context)=> const HomePage(),
+              NewTaskPage.id:(context)=> const NewTaskPage(),
+              UpdatePage.id:(context)=>  UpdatePage(descriptionOfTask: '', timeOfTask: '', dateOfTask: '', index: 0,),
+              SubHomePage.id:(context)=> SubHomePage(description: '', time: '', dates: '',),
+            },
+          );
+        });
+
   }
 }
 
