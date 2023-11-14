@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:logger/logger.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:notepad/components/compnents.dart';
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   HiveService hiveService = HiveService();
   Notes notes = Notes();
   var logger = Logger();
+  String text = '';
 
   //
   // final List<Map<String, dynamic>> _allUser = [
@@ -63,6 +65,8 @@ class _HomePageState extends State<HomePage> {
   //      print('itemsList: $itemsList');
   //    });
   //  }
+
+  //
   // void _runFilter(String enteredKeyword,{dynamic it}) {
   //   List<Map<String, dynamic>> results = [];
   //   if (enteredKeyword.isEmpty) {
@@ -73,23 +77,18 @@ class _HomePageState extends State<HomePage> {
   //     //results = _allUser.where((user) => user["title"].toLowerCase().contains(enteredKeyword.toLowerCase())).toList();
   //   }
   //   setState(() {
-  //     itemsList = results;
+  //     //itemsList = results;
   //   });
   // }
+
   //
-  // Future <void>_createItem(Map<dynamic, dynamic> map) async {
-  //   await notePadBox.add(map);
-  //   _refreshItem();
-  //   print('shoppingBox length: ${notePadBox.length}');
+  // @override
+  // initState() {
+  //   // _foundUsers = _allUser;
+  //   super.initState();
+  //   //_refreshItem();
+  //
   // }
-
-  @override
-  initState() {
-    // _foundUsers = _allUser;
-    super.initState();
-    //_refreshItem();
-
-  }
 
   void showDialog() {
     NAlertDialog(
@@ -135,6 +134,7 @@ class _HomePageState extends State<HomePage> {
             notes = Notes(description: descriptionController.text);
             HiveService.storeNotes(Notes(description: notes.description));
             descriptionController.clear();
+            Navigator.pop(context);
           },
           child: Container(
               height: 38.0,
@@ -155,6 +155,180 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.bold)))),
         ),
       ],
+    ).show(context);
+  }
+
+  void showLanguageDialog() {
+    var size = MediaQuery.of(context).size;
+    NAlertDialog(
+      dialogStyle: DialogStyle(titleDivider: true),
+      content: Container(
+        margin: const EdgeInsets.only(top: 1.0),
+        child: SizedBox(
+          height: size.height * 0.05,
+          child: const Center(
+            child: Text('Select language',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 28.0),),
+          )
+        ),
+      ),
+      actions: <Widget>[
+        Column(
+          children: [
+            RadioListTile(
+              value: 'Chinese',
+              groupValue: text,
+              //title: const Text('Chinese',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+              onChanged: (val) {
+                setState(() {
+                  text = val.toString();
+                });
+              },
+              activeColor: Colors.blueAccent,
+              selected: false,
+            ),
+            RadioListTile(
+              value: 'English',
+              groupValue: text,
+             // title: const Text('English',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+              onChanged: (val) {
+                setState(() {
+                  text = val.toString();
+                });
+              },
+              activeColor: Colors.blueAccent,
+              selected: false,
+            ),
+            RadioListTile(
+              value: 'German',
+              groupValue: text,
+              //title:  const Text('German',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+              onChanged: (val) {
+                setState(() {
+                  text = val.toString();
+                });
+              },
+              activeColor: Colors.blueAccent,
+              selected: false,
+            ),
+            RadioListTile(
+              value: 'Russian',
+              groupValue: text,
+             // title:  const Text('Russian',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+              onChanged: (val) {
+                setState(() {
+                  text = val.toString();
+                });
+              },
+              activeColor: Colors.blueAccent,
+              selected: false,
+            ),
+            RadioListTile(
+              value: 'Spanish',
+              groupValue: text,
+              //title:  const Text('Spanish',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+              onChanged: (val) {
+                setState(() {
+                  text = val.toString();
+                });
+              },
+              activeColor: Colors.blueAccent,
+              selected: false,
+            ),
+            RadioListTile(
+              value: 'Uzbek',
+              groupValue: text,
+             // title:  const Text('Uzbek',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+              onChanged: (val) {
+                setState(() {
+                  text = val.toString();
+                });
+              },
+              activeColor: Colors.blueAccent,
+              selected: false,
+            ),
+
+            InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                  height: 38.0,
+                  margin: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(4.0),
+                  decoration: BoxDecoration(
+                      color: const Color(0xffff0000),
+                      borderRadius: BorderRadius.circular(4.0),
+                      border: Border.all(
+                        width: 1.4,
+                        color: const Color(0xffff0000),
+                      )),
+                  child: const Center(
+                      child: Text(
+                        "Close",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ))),
+            ),
+            InkWell(
+              onTap: () {
+                notes = Notes(description: descriptionController.text);
+                HiveService.storeNotes(Notes(description: notes.description));
+                descriptionController.clear();
+              },
+              child: Container(
+                  height: 38.0,
+                  margin: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(4.0),
+                  decoration: BoxDecoration(
+                      color: const Color(0xff0abf53),
+                      borderRadius: BorderRadius.circular(4.0),
+                      border: Border.all(
+                        width: 1.4,
+                        color: const Color(0xff0abf53),
+                      )),
+                  child: const Center(
+                      child: Text("Save",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold)))),
+            ),
+          ],
+        ),
+      ],
+    ).show(context);
+  }
+
+  void showSwitchModeDialog() {
+    NAlertDialog(
+      dialogStyle: DialogStyle(titleDivider: true),
+      content: Container(
+        margin: const EdgeInsets.only(top: 18.0),
+        child:LiteRollingSwitch(
+          //initial value
+          value: true,
+          textOn: 'White',
+          textOff: 'Dark',
+          colorOn: Colors.black12,
+          colorOff: Colors.black,
+          iconOn: Icons.dark_mode_outlined,
+          iconOff: Icons.dark_mode,
+          textSize: 16.0,
+          onChanged: (bool state) {
+            //Use it to manage the different states
+            print('Current State of SWITCH IS: $state');
+          }, onTap: (){
+
+        }, onDoubleTap: (){
+
+        }, onSwipe: (){
+
+        },
+        ),
+
+      ),
     ).show(context);
   }
 
@@ -211,10 +385,12 @@ class _HomePageState extends State<HomePage> {
                         width: double.infinity,
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const NewTaskPage()));
+                            showSwitchModeDialog();
+
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (_) => const NewTaskPage()));
                           },
                           child: Row(
                             children: const <Widget>[
@@ -230,7 +406,7 @@ class _HomePageState extends State<HomePage> {
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 17,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.normal),
                               ),
                             ],
                           ),
@@ -245,10 +421,7 @@ class _HomePageState extends State<HomePage> {
                         width: double.infinity,
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const NewTaskPage()));
+                            showLanguageDialog();
                           },
                           child: Row(
                             children: const <Widget>[
@@ -264,7 +437,7 @@ class _HomePageState extends State<HomePage> {
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 17,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.normal),
                               ),
                             ],
                           ),
@@ -279,10 +452,7 @@ class _HomePageState extends State<HomePage> {
                         width: double.infinity,
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const NewTaskPage()));
+
                           },
                           child: Row(
                             children: const <Widget>[
@@ -298,7 +468,7 @@ class _HomePageState extends State<HomePage> {
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 17,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.normal),
                               ),
                             ],
                           ),
@@ -322,7 +492,7 @@ class _HomePageState extends State<HomePage> {
                         children:  const [
                           Image(image: AssetImage(ImageApp.unnamed),),
                           SizedBox(height: 16.0),
-                          Text('Notes have not created yet!',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+                          Text('Notes have not created yet!',style: TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 18.0),),
                         ],
                       )
                   )
@@ -334,96 +504,126 @@ class _HomePageState extends State<HomePage> {
                   final data = box.getAt(index)!;
                   return InkWell(
                     onTap: (){
-                      Navigator.pushNamed(context, SubHomePage.id);
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                        return SubHomePage(
+                          description: data.description??'',
+                          time: data.timeOfTask??'',
+                          dates: data.dateOfTask??'',);
+                      }));
                     },
                     child: Container(
-                      height: size.height*0.18,
+                      height: size.height*0.16,
                       width: size.width*0.6,
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.only(right: 8.0,left: 8.0,top: 6.0,bottom: 6.0),
                       margin: const EdgeInsets.only(right: 4.0,left: 4.0,top: 6.0),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8.0),
-                          color: const Color(0xfff5deb3)
-                         // color: const Color(0xffbdd3f1)
+                          color: const Color(0xffbdd3f1)
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: size.height,
-                              width: double.infinity,
-                              child: Text(data.description??'',
-                                style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 19.0),),
+                          //#deadlines
+                          Container(
+                            height: size.height * 0.048,
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(2.0),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4.0),
+                            ),
+                            child: Row(
+                              children: [
+                                 Container(
+                                     width: size.width * 0.22,
+                                     padding: const EdgeInsets.all(2.0),
+                                     decoration: BoxDecoration(
+                                         borderRadius: BorderRadius.circular(4.0),
+                                         border: Border.all(width: 1.4,color: Colors.red),
+                                         color: Colors.red
+                                     ),
+                                    child: const Text('Deadline:',style: TextStyle(color: Colors.white,fontSize: 18.5,fontWeight: FontWeight.bold),)),
+                                const SizedBox(width: 10.0),
+                                SizedBox(
+                                  child: Text(data.dateOfTask??'',
+                                      style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                          fontSize: 17.0),overflow: TextOverflow.ellipsis),
+
+                                ),
+                                const SizedBox(width: 10.0),
+                                SizedBox(
+                                  child: Text(data.timeOfTask??'', style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 17.0),overflow: TextOverflow.ellipsis,),
+                                ),
+
+                              ],
                             ),
                           ),
-                          const SizedBox(height:22.0),
+                          const SizedBox(height:6.0),
+                          Expanded(
+                            child: SizedBox(
+                              height: size.height*0.1,
+                              width: double.infinity,
+                              child: Text(data.description??'',
+                                style: const TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 16.0),overflow: TextOverflow.ellipsis,),
+                            ),
+                          ),
+                          const SizedBox(height:6.0),
+                          //#share,edit,delete
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              const SizedBox(
-                                  height: 20.0,
-                                  child: Center(child: Text('Deadline: ',style: TextStyle(color: Colors.red,fontSize: 18,fontWeight: FontWeight.bold),),)
-                              ),
                               Container(
-                                padding: const EdgeInsets.all(2.0),
+                                height: size.height * 0.04,
+                                width: size.width * 0.10,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4.0),
-                                  border: Border.all(width: 1.4,color: Colors.red),
-                                  color: Colors.red
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  border: Border.all(width: 1.4,color: Colors.black),
+                                  //color: Colors.white
                                 ),
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      width: size.width * 0.20,
-                                      child: Text(data.timeOfTask??'', style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 17.0),overflow: TextOverflow.ellipsis,),
-                                    ),
-                                    const SizedBox(width: 2),
-                                    const Text('-', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 24.0),overflow: TextOverflow.ellipsis),
-                                    const SizedBox(width: 2),
-                                    SizedBox(
-                                      width: size.width * 0.25,
-                                      child:  Text(data.dateOfTask??'',
-                                            style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,
-                                                fontSize: 17.0),overflow: TextOverflow.ellipsis),
-                                    ),
-                                  ],
-                                ),
+                                child: IconButton(
+                                    onPressed: (){
+                                      // Navigator.pushNamed(context, NewTaskPage.id);
+                                    },
+                                    icon: const Icon(Icons.share,color: Colors.black,size: 20,)),
                               ),
-                              const SizedBox(width: 2),
-                              Row(
-                                children: [
-                                  Container(
-                                    height: size.height * 0.04,
-                                    width: size.width * 0.10,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5.0),
-                                      border: Border.all(width: 1.4,color: Colors.black),
-                                      //color: Colors.white
-                                    ),
-                                    child: IconButton(
-                                        onPressed: (){
-                                          Navigator.pushNamed(context, NewTaskPage.id);
-                                        },
-                                        icon: const Icon(Icons.edit,color: Colors.black,size: 20,)),
-                                  ),
-                                  const SizedBox(width: 5.0),
-                                  Container(
-                                    height: size.height * 0.04,
-                                    width: size.width * 0.10,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5.0),
-                                      border: Border.all(width: 1.4,color: Colors.black),
-                                      //color: Colors.white
-                                    ),
-                                    child: IconButton(
-                                        onPressed: (){
-                                          box.deleteAt(index);
-                                        },
-                                        icon: const Icon(Icons.delete,color: Colors.black,size: 20,)),
-                                  )
-                                ],
+                              const SizedBox(width: 18.0),
+                              Container(
+                                height: size.height * 0.04,
+                                width: size.width * 0.10,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  border: Border.all(width: 1.4,color: Colors.black),
+                                  //color: Colors.white
+                                ),
+                                child: IconButton(
+                                    onPressed: (){
+                                      print( data.description);
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                                        return NewTaskPage(
+                                          descriptionOfTask: data.description??'',
+                                          timeOfTask: data.timeOfTask??'',
+                                          dateOfTask: data.dateOfTask??'',);
+                                      }));
+                                    },
+                                    icon: const Icon(Icons.edit,color: Colors.black,size: 20,)),
+                              ),
+                              const SizedBox(width: 18.0),
+                              Container(
+                                height: size.height * 0.04,
+                                width: size.width * 0.10,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  border: Border.all(width: 1.4,color: Colors.black),
+                                  //color: Colors.white
+                                ),
+                                child: IconButton(
+                                    onPressed: (){
+                                      setState(() {
+                                        box.deleteAt(index);
+                                      });
+
+                                    },
+                                    icon: const Icon(Icons.delete,color: Colors.black,size: 20,)),
                               )
                             ],
                           )
@@ -432,10 +632,6 @@ class _HomePageState extends State<HomePage> {
 
                     ),
                   );
-                  // return ListTile(
-                  //   title: Text(data.description ?? ''),
-                  //   subtitle: Text(data.timeOfTask ?? ''),
-                  // );
                 },
               );
             }

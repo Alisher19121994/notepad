@@ -5,7 +5,15 @@ import '../../hiveServices/hive_service.dart';
 import '../../models/notes.dart';
 
 class NewTaskPage extends StatefulWidget {
-  const NewTaskPage({super.key});
+  String descriptionOfTask;
+  String timeOfTask;
+  String dateOfTask;
+
+  NewTaskPage(
+      {super.key,
+        required this.descriptionOfTask,
+        required this.timeOfTask,
+        required this.dateOfTask});
   static const String id = 'NewTaskPage';
   @override
   State<NewTaskPage> createState() => _NewTaskPageState();
@@ -94,20 +102,13 @@ class _NewTaskPageState extends State<NewTaskPage> {
                            SizedBox(
                              width: size.width * 0.8,
                              child: TextField(
-                               controller: descriptionController,
+                               controller:descriptionController,
                                  minLines: 1,
                                  maxLines: 10,
                                  keyboardType: TextInputType.multiline,
                                  decoration: const InputDecoration(
                                    hintText: 'Enter Task Here:',
                                  ),
-                               // onChanged: (value){
-                               //   setState(() {
-                               //   //  descriptionController = value as TextEditingController;
-                               //     notes = Notes(description: descriptionController.text);
-                               //     descriptionController.clear();
-                               //   });
-                               // },
                              ),
                            ),
                            Container(
@@ -158,12 +159,6 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                    decoration: const InputDecoration(
                                      hintText: 'Date',
                                    ),
-                                   // onChanged: (value){
-                                   //   setState(() {
-                                   //     dateTimePickerController = value;
-                                   //   //  dateTimePickerController.clear();
-                                   //   });
-                                   // },
                                  ),
                           ),
                                Container(
@@ -174,21 +169,17 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                  ),
                                  child: IconButton(
                                      onPressed: ()async{
-                                       showsDatePicker();
-                                      //  DateTime? dateTime =  await showDatePicker(
-                                      //      context: context,
-                                      //      initialDate: DateTime.now(),
-                                      //      firstDate: DateTime(2020),
-                                      //      lastDate: DateTime(2042)
-                                      //  );
-                                      //  if(dateTime != null){
-                                      //    setState(() {
-                                      //      dateTimePickerController = dateTime.toString();
-                                      //      // dateTimePickerController = dateTime.month.toString();
-                                      //      // dateTimePickerController = dateTime.year.toString();
-                                      //
-                                      //    });
-                                      //  }
+                                       DateTime? dateTime =  await showDatePicker(
+                                           context: context,
+                                           initialDate: DateTime.now(),
+                                           firstDate: DateTime(2020),
+                                           lastDate: DateTime(2042)
+                                       );
+                                       if(dateTime != null){
+                                         setState(() {
+                                           dateTimePickerController.text = dateTime.toString().split(' ')[0];
+                                         });
+                                       }
                                      },
                                      icon: const Icon(Icons.calendar_today)
                                  ),
@@ -230,23 +221,24 @@ class _NewTaskPageState extends State<NewTaskPage> {
                                   decoration: const InputDecoration(
                                     hintText: 'Time',
                                   ),
-                                  // onChanged: (value){
-                                  //   setState(() {
-                                  //     timePickerController = value;
-                                  //    // timePickerController.clear();
-                                  //   });
-                                  // },
                                 ),
                               ),
                               Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(100.0),
                                   border: Border.all(width: 1.4,color: Colors.black12),
-                                  //color: Colors.white
                                 ),
                                 child: IconButton(
-                                    onPressed: (){
-                                      showsTimePicker();
+                                    onPressed: ()async{
+                                      TimeOfDay? timeOfDay =  await showTimePicker(
+                                          context: context,
+                                          initialTime: TimeOfDay.now()
+                                      );
+                                      if(timeOfDay != null){
+                                        setState(() {
+                                          timePickerController.text = timeOfDay.toString().split(' ')[0];
+                                        });
+                                      }
                                     },
                                     icon: const Icon(Icons.timer_outlined)
                                 ),
@@ -267,10 +259,18 @@ class _NewTaskPageState extends State<NewTaskPage> {
           child: FloatingActionButton(
             backgroundColor:  const Color(0xff0abf53),
             onPressed: (){
-              var storeNotes = HiveService.storeNotes(Notes(description: descriptionController.text,dateOfTask: dateTimePickerController.text,timeOfTask:timePickerController.text));
-              if(storeNotes != null){
+              widget.descriptionOfTask = descriptionController.text;
+              widget.timeOfTask = timePickerController.text;
+              widget.dateOfTask = dateTimePickerController.text;
+              var storeNotes = HiveService.storeNotes(Notes(description: descriptionController.text,
+                  dateOfTask: dateTimePickerController.text,timeOfTask:timePickerController.text));
+              // var updateNotes = HiveService.updateNotes(Notes(description: widget.descriptionOfTask,
+              //     dateOfTask:  widget.timeOfTask,timeOfTask: widget.dateOfTask),0);
+              if(storeNotes != null ){
                 showDialog();
               }
+
+
             },
             child: const Center(
               child: Icon(Icons.check,color: Colors.white,size: 28,),
@@ -279,37 +279,40 @@ class _NewTaskPageState extends State<NewTaskPage> {
 
     );
   }
-  Future<void> showsDatePicker()async {
-    DateTime? dateTime =  await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2020),
-        lastDate: DateTime(2042)
-    );
-    if(dateTime != null){
-      setState(() {
-        // dateTimePickerController = dateTime.day.toString();
-        // dateTimePickerController = dateTime.month.toString();
-        // dateTimePickerController = dateTime.year.toString();
-        //dateTimePickerController.text = dateTime.toString().split(' ')[0];
-        dateTimePickerController.text = '';
 
 
-      });
-    }
-  }
-  Future<void> showsTimePicker()async {
-    TimeOfDay? timeOfDay =  await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now()
-    );
-    if(timeOfDay != null){
-      setState(() {
-        timePickerController.text = timeOfDay.hour.toString();
-        timePickerController.text = '';
-
-
-      });
-    }
-  }
+  //
+  // Future<void> showsDatePicker()async {
+  //   DateTime? dateTime =  await showDatePicker(
+  //       context: context,
+  //       initialDate: DateTime.now(),
+  //       firstDate: DateTime(2020),
+  //       lastDate: DateTime(2042)
+  //   );
+  //   if(dateTime != null){
+  //     setState(() {
+  //       // dateTimePickerController = dateTime.day.toString();
+  //       // dateTimePickerController = dateTime.month.toString();
+  //       // dateTimePickerController = dateTime.year.toString();
+  //       //dateTimePickerController.text = dateTime.toString().split(' ')[0];
+  //       dateTimePickerController.text = '';
+  //
+  //
+  //     });
+  //   }
+  // }
+  // Future<void> showsTimePicker()async {
+  //   TimeOfDay? timeOfDay =  await showTimePicker(
+  //       context: context,
+  //       initialTime: TimeOfDay.now()
+  //   );
+  //   if(timeOfDay != null){
+  //     setState(() {
+  //       timePickerController.text = timeOfDay.toString().split(' ')[0];
+  //       timePickerController.text = '';
+  //
+  //
+  //     });
+  //   }
+  // }
 }
