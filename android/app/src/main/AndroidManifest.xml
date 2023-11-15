@@ -4,6 +4,12 @@
         android:label="NotePad"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher_foreground">
+       <!--   android:name='com.google.android.gms.ads.APPLICATION_ID'
+        android:name='com.google.android.gms.ads.ca-app-pub-9876613466284305/8135994985'-->
+       <meta-data
+           android:name='com.google.android.gms.ads.APPLICATION_ID'
+           android:value='ca-app-pub-9876613466284305~2089461388'/><!-- 1->name-> admob id-->  <!--2->value-> APPLICATION_ID-->
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

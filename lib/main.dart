@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notepad/models/adapter.dart';
 import 'package:notepad/pages/screens/home_page.dart';
@@ -8,11 +9,11 @@ import 'package:notepad/pages/screens/update_page.dart';
 import 'package:notepad/splash/splash_page.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-
 import 'controller/control_home.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   final appDocumentDir = await getApplicationDocumentsDirectory();
   await Hive.initFlutter(appDocumentDir.path);
   Hive.registerAdapter(NotesAdapter());
@@ -22,17 +23,6 @@ void main() async{
       child: const MyApp(),
     ),
   );
-  // SharedPreferences.getInstance().then((prefs) {
-  //   var isDarkTheme = prefs.getBool("darkTheme") ?? false;
-  //   return runApp(
-  //     ChangeNotifierProvider<HomeController>(
-  //       child: const MyApp(),
-  //       create: (BuildContext context) {
-  //         return HomeController();
-  //       },
-  //     ),
-  //   );
-  // });
 }
 
 class MyApp extends StatelessWidget {

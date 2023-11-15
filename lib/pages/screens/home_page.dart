@@ -12,6 +12,7 @@ import 'package:notepad/pages/screens/update_page.dart';
 import 'package:provider/provider.dart';
 //import 'package:share_plus/share_plus.dart';
 
+import '../../googleAds/googleads_page.dart';
 import '../../main.dart';
 
 class HomePage extends StatefulWidget {
@@ -689,6 +690,7 @@ class _HomePageState extends State<HomePage> {
           }
         },
       ),
+      bottomNavigationBar:const CustomBannerAd(),
       // body: Padding(
       //   padding: const EdgeInsets.only(left: 4.0, right: 4.0),
       //   child: SingleChildScrollView(

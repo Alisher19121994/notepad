@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../components/compnents.dart';
+import '../../googleAds/googleads_page.dart';
 
 class SubHomePage extends StatefulWidget {
-  String description;
-  String time;
-  String dates;
+ final String description;
+ final String time;
+ final String dates;
 
-  SubHomePage(
+  const SubHomePage(
       {super.key,
       required this.description,
       required this.time,
@@ -23,9 +24,6 @@ class _SubHomePageState extends State<SubHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.description);
-    print(widget.time);
-    print(widget.dates);
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xffe7effa),
@@ -49,6 +47,7 @@ class _SubHomePageState extends State<SubHomePage> {
             )
           ])),
       body: listOfNotes(),
+      bottomNavigationBar:const CustomBannerAd(),
     );
   }
 
@@ -111,14 +110,20 @@ class _SubHomePageState extends State<SubHomePage> {
           const SizedBox(height: 12.0),
           Expanded(
             child: SizedBox(
-              // height: size.height,
               width: double.infinity,
-              child: Text(
-                widget.description??'',
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 19.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.description??'',
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 19.0),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

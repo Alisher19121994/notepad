@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:speech_to_text_google_dialog/speech_to_text_google_dialog.dart';
+import '../../googleAds/googleads_page.dart';
 import '../../hiveServices/hive_service.dart';
 import '../../models/notes.dart';
 
@@ -32,7 +33,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
           return const AlertDialog(
             backgroundColor: Colors.greenAccent,
             title: Text("New Task",style: TextStyle(color:Colors.black,fontSize: 17,fontWeight: FontWeight.normal),),
-            content:  Text("Successfully Saved",style: TextStyle(color:Colors.black,fontSize: 20,fontWeight: FontWeight.bold),),
+            content:  Text("Successfully Saved",style: TextStyle(color:Colors.black,fontSize: 18,fontWeight: FontWeight.bold),),
           );
         });
   }
@@ -286,7 +287,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
               child: Icon(Icons.check,color: Colors.white,size: 28,),
             ),
           )),
-
+      bottomNavigationBar:const CustomBannerAd(),
     );
   }
 
