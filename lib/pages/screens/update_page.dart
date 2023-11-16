@@ -9,7 +9,7 @@ class UpdatePage extends StatefulWidget {
   final String timeOfTask;
   final String dateOfTask;
   final int index;
-   UpdatePage(
+  const UpdatePage(
       {super.key,
         required this.descriptionOfTask,
         required this.timeOfTask,
