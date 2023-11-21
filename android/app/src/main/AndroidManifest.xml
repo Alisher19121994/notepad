@@ -5,6 +5,9 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher_foreground">
        <!--   android:name='com.google.android.gms.ads.APPLICATION_ID'
+
+       ca-app-pub-9876613466284305~2089461388
+       ca-app-pub-9876613466284305/8135994985
         android:name='com.google.android.gms.ads.ca-app-pub-9876613466284305/8135994985'-->
        <meta-data
            android:name='com.google.android.gms.ads.APPLICATION_ID'

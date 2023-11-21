@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:notepad/models/adapter.dart';
-import 'package:notepad/pages/screens/home_page.dart';
-import 'package:notepad/pages/screens/new_task_page.dart';
-import 'package:notepad/pages/screens/sub_home_page.dart';
-import 'package:notepad/pages/screens/update_page.dart';
-import 'package:notepad/splash/splash_page.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'controller/control_home.dart';
+import 'features/home/data/global_models/models/adapter.dart';
+import 'features/home/presentation/bloc/controller/control_home.dart';
+import 'features/home/presentation/pages/screens/home_page.dart';
+import 'features/home/presentation/pages/screens/new_task_page.dart';
+import 'features/home/presentation/pages/screens/sub_home_page.dart';
+import 'features/home/presentation/pages/screens/update_page.dart';
+import 'features/splash/presentation/pages/splash_page.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
