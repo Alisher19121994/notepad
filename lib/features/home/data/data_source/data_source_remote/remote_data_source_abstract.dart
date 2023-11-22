@@ -1,9 +1,11 @@
 
 
+import 'package:notepad/features/home/data/global_models/models/notes.dart';
+
 abstract class HomeRemoteDataSource{
   const HomeRemoteDataSource();
 
-  //to do: override qilishga majburlash uchun abstract qilib yozb olinyaptdi bu function
+  //TODO: override qilishga majburlash uchun abstract qilib yozb olinyaptdi bu function
 
- // Future<List<modelClass>> fetchCurrency();
+  Future<List<Notes>> fetchCurrency();
 }
