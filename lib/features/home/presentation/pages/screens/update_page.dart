@@ -5,12 +5,14 @@ import '../../../data/data_source/data_source_local/local_data_base_page.dart';
 import '../../../data/global_models/models/notes.dart';
 
 class UpdatePage extends StatefulWidget {
+  final String title;
   final String descriptionOfTask;
   final String timeOfTask;
   final String dateOfTask;
   final int index;
   const UpdatePage(
       {super.key,
+        required this.title,
         required this.descriptionOfTask,
         required this.timeOfTask,
         required this.dateOfTask,
@@ -24,6 +26,7 @@ class UpdatePage extends StatefulWidget {
 
 class _UpdatePageState extends State<UpdatePage> {
   final formKey = GlobalKey<FormState>();
+  TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController dateTimePickerController = TextEditingController();
   TextEditingController timePickerController = TextEditingController();
@@ -42,6 +45,7 @@ class _UpdatePageState extends State<UpdatePage> {
 
   @override
   void initState() {
+    titleController.text= widget.title;
     descriptionController.text= widget.descriptionOfTask;
     timePickerController.text =  widget.timeOfTask;
     dateTimePickerController.text = widget.dateOfTask;
@@ -49,6 +53,7 @@ class _UpdatePageState extends State<UpdatePage> {
   }
   @override
   void dispose() {
+    titleController.dispose();
     descriptionController.dispose();
     timePickerController.dispose();
     dateTimePickerController.dispose();
@@ -64,7 +69,7 @@ class _UpdatePageState extends State<UpdatePage> {
         elevation: 0.0,
         backgroundColor: const Color(0xff699BE0),
         title: const Text(
-          'Update task',
+          'Update Task',
           style: TextStyle(
               color: Colors.white,
               fontSize: 20.0,
@@ -78,6 +83,48 @@ class _UpdatePageState extends State<UpdatePage> {
           padding: const EdgeInsets.only(left: 14.0,right: 6.0,top: 20.0),
           child: Column(
             children: [
+              //#enter title
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Update title',style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: size.width * 0.8,
+                        child: TextField(
+                          controller:titleController,
+                          minLines: 1,
+                          maxLines: 1,
+                          keyboardType: TextInputType.multiline,
+                          decoration: const InputDecoration(
+                            hintText: 'Enter Title Here:',
+                          ),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100.0),
+                          border: Border.all(width: 1.4,color: Colors.black12),
+                        ),
+                        child: IconButton(
+                            onPressed:()async{
+                              await SpeechToTextGoogleDialog.getInstance().showGoogleDialog(onTextReceived: (data) {
+                                setState(() {
+                                  titleController.text = data.toString();
+                                });
+                              });
+                            },
+                            icon:const Icon(Icons.mic,color: Colors.black,size: 24,)
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6.0,),
               //#enter to be done
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,9 +170,8 @@ class _UpdatePageState extends State<UpdatePage> {
               const SizedBox(height: 27.0,),
               //#Due date
               SizedBox(
-                  height: size.height*0.1,
-                  child: SingleChildScrollView(
-                    child: Column(
+                  height: size.height*0.12,
+                  child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -181,13 +227,11 @@ class _UpdatePageState extends State<UpdatePage> {
 
                       ],
                     ),
-                  )
               ),
               //#Due time
               SizedBox(
-                  height: size.height*0.1,
-                  child: SingleChildScrollView(
-                    child: Column(
+                  height: size.height*0.12,
+                  child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -240,7 +284,6 @@ class _UpdatePageState extends State<UpdatePage> {
 
                       ],
                     ),
-                  )
               ),
             ],
           ),
@@ -251,8 +294,12 @@ class _UpdatePageState extends State<UpdatePage> {
           child: FloatingActionButton(
             backgroundColor:  const Color(0xff0abf53),
             onPressed: (){
-              var updateNotes = HiveService.updateNotes(Notes(description: descriptionController.text,
-                  dateOfTask:  dateTimePickerController.text,timeOfTask: timePickerController.text),widget.index);
+              var updateNotes = HiveService.updateNotes(
+                  Notes(
+                      title: titleController.text,
+                      description: descriptionController.text,
+                      dateOfTask:  dateTimePickerController.text,
+                      timeOfTask: timePickerController.text),widget.index);
               if(updateNotes != null ){
                 showSuccessfulDialog();
               }

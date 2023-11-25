@@ -4,12 +4,14 @@ import '../../../../../constants/compnents.dart';
 import '../../admobs_google/google_admobs.dart';
 
 class SubHomePage extends StatefulWidget {
+ final String title;
  final String description;
  final String time;
  final String dates;
 
   const SubHomePage(
       {super.key,
+      required this.title,
       required this.description,
       required this.time,
       required this.dates});
@@ -55,22 +57,20 @@ class _SubHomePageState extends State<SubHomePage> {
   Widget listOfNotes() {
     var size = MediaQuery.of(context).size;
     return Container(
-      //height: size.height*0.18,
       width: size.width * 1,
-      padding: const EdgeInsets.all(10.0),
-      margin: const EdgeInsets.only(right: 4.0, left: 4.0, top: 2.0),
+      padding: const EdgeInsets.only(right: 5.0, left: 5.0),
+      margin: const EdgeInsets.only(right: 2.0, left: 2.0, top: 1.0),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(4.0),
           color: const Color(0xffbdd3f1)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(top: 8.0,bottom: 8.0,left: 5.0,right: 5.0),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.0),
-                //color: const Color(0xffbdd3f1)
+                borderRadius: BorderRadius.circular(4.0),
                 color: Colors.red
             ),
             child: Row(
@@ -104,11 +104,9 @@ class _SubHomePageState extends State<SubHomePage> {
                         fontSize: 17.0),
                   ),
                 ),
-
               ],
             ),
           ),
-          const SizedBox(height: 12.0),
           Expanded(
             child: SizedBox(
               width: double.infinity,
@@ -117,11 +115,19 @@ class _SubHomePageState extends State<SubHomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.description??'',
+                      widget.title??'',
                       style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
-                          fontSize: 19.0),
+                          fontSize: 21.0),
+                    ),
+                    const SizedBox(height: 4.0,),
+                    Text(
+                      widget.description??'',
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 17.0),
                     ),
                   ],
                 ),

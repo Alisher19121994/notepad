@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.daminov.notepad.notepad">
    <application
-        android:label="NotePad"
+        android:label="Notepad"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher_foreground">
        <!--   android:name='com.google.android.gms.ads.APPLICATION_ID'

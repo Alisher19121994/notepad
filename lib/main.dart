@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'features/home/data/global_models/models/adapter.dart';
 import 'features/home/presentation/bloc/controller/control_home.dart';
 import 'features/home/presentation/pages/screens/home_page.dart';
+import 'features/home/presentation/pages/screens/morePage/hand_writing.dart';
 import 'features/home/presentation/pages/screens/new_task_page.dart';
 import 'features/home/presentation/pages/screens/sub_home_page.dart';
 import 'features/home/presentation/pages/screens/update_page.dart';
@@ -16,6 +17,7 @@ void main() async{
   MobileAds.instance.initialize();
   final appDocumentDir = await getApplicationDocumentsDirectory();
   await Hive.initFlutter(appDocumentDir.path);
+  //await Hive.openBox<Notes>('notepad');
   Hive.registerAdapter(NotesAdapter());
   runApp(
     ChangeNotifierProvider<HomeController>(
@@ -40,8 +42,9 @@ class MyApp extends StatelessWidget {
             routes: {
               HomePage.id:(context)=> const HomePage(),
               NewTaskPage.id:(context)=> const NewTaskPage(),
-              UpdatePage.id:(context)=>  UpdatePage(descriptionOfTask: '', timeOfTask: '', dateOfTask: '', index: 0,),
-              SubHomePage.id:(context)=> SubHomePage(description: '', time: '', dates: '',),
+              HandWritingPage.id:(context)=> const HandWritingPage(),
+              UpdatePage.id:(context)=>  const UpdatePage(title: '',descriptionOfTask: '', timeOfTask: '', dateOfTask: '', index: 0,),
+              SubHomePage.id:(context)=> const SubHomePage(title: '',description: '', time: '', dates: '',),
             },
           );
         });

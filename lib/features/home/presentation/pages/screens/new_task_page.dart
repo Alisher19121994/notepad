@@ -15,10 +15,11 @@ class NewTaskPage extends StatefulWidget {
 
 class _NewTaskPageState extends State<NewTaskPage> {
   final formKey = GlobalKey<FormState>();
+  TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController dateTimePickerController = TextEditingController();
   TextEditingController timePickerController = TextEditingController();
-  String? result;
+ // String? result;
   // late String dateTimePickerController;
   // late String timePickerController;
   HiveService hiveService = HiveService();
@@ -27,15 +28,25 @@ class _NewTaskPageState extends State<NewTaskPage> {
 
 
   void showSuccessfulDialog(){
-    showDialog(
-        context: context,
-        builder: (context){
-          return const AlertDialog(
-            backgroundColor: Colors.greenAccent,
-            title: Text("New Task",style: TextStyle(color:Colors.black,fontSize: 17,fontWeight: FontWeight.normal),),
-            content:  Text("Successfully Saved",style: TextStyle(color:Colors.black,fontSize: 18,fontWeight: FontWeight.bold),),
-          );
-        });
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: const Text('New Task Saved'),
+      backgroundColor: Colors.red,
+      behavior: SnackBarBehavior.floating,
+      // margin: EdgeInsets.only(
+      //   bottom: MediaQuery.of(context).size.height - 10,
+      //   left: 16,
+      //   right: 16,
+      // ),
+    ));
+    // showDialog(
+    //     context: context,
+    //     builder: (context){
+    //       return const AlertDialog(
+    //         backgroundColor: Colors.greenAccent,
+    //         title: Text("New Task",style: TextStyle(color:Colors.black,fontSize: 17,fontWeight: FontWeight.normal),),
+    //         content:  Text("Successfully Saved",style: TextStyle(color:Colors.black,fontSize: 18,fontWeight: FontWeight.bold),),
+    //       );
+    //     });
   }
 
   // void _refreshItem()async{
@@ -83,6 +94,48 @@ class _NewTaskPageState extends State<NewTaskPage> {
             padding: const EdgeInsets.only(left: 14.0,right: 6.0,top: 20.0),
             child: Column(
               children: [
+                //#enter title
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('What is title?',style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: size.width * 0.8,
+                          child: TextField(
+                            controller:titleController,
+                            minLines: 1,
+                            maxLines: 1,
+                            keyboardType: TextInputType.multiline,
+                            decoration: const InputDecoration(
+                              hintText: 'Enter Title Here:',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100.0),
+                            border: Border.all(width: 1.4,color: Colors.black12),
+                          ),
+                          child: IconButton(
+                              onPressed:()async{
+                                await SpeechToTextGoogleDialog.getInstance().showGoogleDialog(onTextReceived: (data) {
+                                  setState(() {
+                                    titleController.text = data.toString();
+                                  });
+                                });
+                              },
+                              icon:const Icon(Icons.mic,color: Colors.black,size: 24,)
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6.0,),
                 //#enter to be done
                 Column(
                      crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,9 +195,8 @@ class _NewTaskPageState extends State<NewTaskPage> {
                 const SizedBox(height: 27.0,),
                 //#Due date
                 SizedBox(
-                    height: size.height*0.1,
-                    child: SingleChildScrollView(
-                      child: Column(
+                    height: size.height*0.12,
+                    child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -200,13 +252,11 @@ class _NewTaskPageState extends State<NewTaskPage> {
 
                         ],
                       ),
-                    )
                 ),
                 //#Due time
                 SizedBox(
-                    height: size.height*0.1,
-                    child: SingleChildScrollView(
-                      child: Column(
+                    height: size.height*0.12,
+                    child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -259,7 +309,6 @@ class _NewTaskPageState extends State<NewTaskPage> {
 
                         ],
                       ),
-                    )
                 ),
               ],
             ),
@@ -270,18 +319,16 @@ class _NewTaskPageState extends State<NewTaskPage> {
           child: FloatingActionButton(
             backgroundColor:  const Color(0xff0abf53),
             onPressed: (){
-              // widget.descriptionOfTask = descriptionController.text;
-              // widget.timeOfTask = timePickerController.text;
-              // widget.dateOfTask = dateTimePickerController.text;
-              var storeNotes = HiveService.storeNotes(Notes(description: descriptionController.text,
-                  dateOfTask: dateTimePickerController.text,timeOfTask:timePickerController.text));
-              // var updateNotes = HiveService.updateNotes(Notes(description: widget.descriptionOfTask,
-              //     dateOfTask:  widget.timeOfTask,timeOfTask: widget.dateOfTask),0);
+              if(titleController.text.isNotEmpty || descriptionController.text.isNotEmpty){
+              var storeNotes = HiveService.storeNotes(
+                  Notes(title:titleController.text,
+                  description: descriptionController.text,
+                  dateOfTask: dateTimePickerController.text,
+                  timeOfTask:timePickerController.text));
               if(storeNotes != null ){
                 showSuccessfulDialog();
               }
-
-
+              }
             },
             child: const Center(
               child: Icon(Icons.check,color: Colors.white,size: 28,),
