@@ -28,6 +28,7 @@ dependencies:
   audioplayers: ^5.2.1
   record: ^5.0.1
   share_plus: ^7.2.1
+  easy_localization: ^3.0.3
   #search_choices: ^2.2.7
 
 
@@ -44,6 +45,7 @@ flutter:
 
   assets:
       - assets/images/
+      - assets/translations/
 
 
   # fonts:

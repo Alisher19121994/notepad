@@ -98,7 +98,6 @@ class _UpdatePageState extends State<UpdatePage> {
                           controller:titleController,
                           minLines: 1,
                           maxLines: 1,
-                          keyboardType: TextInputType.multiline,
                           decoration: const InputDecoration(
                             hintText: 'Enter Title Here:',
                           ),

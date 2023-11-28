@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:record/record.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final Uri _url = Uri.parse('https://play.google.com/store/apps/details?id=com.daminov.notepad.notepad');
+  final Uri _url = Uri.parse(
+      'https://play.google.com/store/apps/details?id=com.daminov.notepad.notepad');
   TextEditingController descriptionController = TextEditingController();
   HiveService hiveService = HiveService();
   Notes notes = Notes();
@@ -60,44 +62,47 @@ class _HomePageState extends State<HomePage> {
   //   {"id": 13, "name": "Becky", "age": 32},
   // ];
 
-   List<DropdownMenuItem<dynamic>> itemsList = [];
+  List<DropdownMenuItem<dynamic>> itemsList = [];
+
   // List<Map<dynamic, dynamic>> items = [];
-   //List<Map<String, dynamic>> _foundUsers = [];
- // var a =  Hive.openBox<Notes>('notepad');
- //
- //  var list  = Hive.box('notepad');
+  //List<Map<String, dynamic>> _foundUsers = [];
+  // var a =  Hive.openBox<Notes>('notepad');
+  //
+  //  var list  = Hive.box('notepad');
 
-   // void _refreshItem()async{
-   //  // var item;
-   //
-   //   final data = list.keys.map((key) {
-   //     final item = list.get(key);
-   //       return {'key': key, 'title':item['title']};
-   //   }).toList();
-   //   // items.add(item);
-   //  // _runFilter('',it:item);
-   //
-   //   setState(() {
-   //     itemsList = data.reversed.cast<DropdownMenuItem>().toList();
-   //     print('itemsList: $itemsList');
-   //   });
-   // }
+  // void _refreshItem()async{
+  //  // var item;
+  //
+  //   final data = list.keys.map((key) {
+  //     final item = list.get(key);
+  //       return {'key': key, 'title':item['title']};
+  //   }).toList();
+  //   // items.add(item);
+  //  // _runFilter('',it:item);
+  //
+  //   setState(() {
+  //     itemsList = data.reversed.cast<DropdownMenuItem>().toList();
+  //     print('itemsList: $itemsList');
+  //   });
+  // }
 
-
-  void _runFilter(String enteredKeyword,{dynamic it}) {
+  void _runFilter(String enteredKeyword, {dynamic it}) {
     List<DropdownMenuItem<dynamic>> results = [];
     if (enteredKeyword.isEmpty) {
       //results = _allUser;
       results = it;
     } else {
-      results = it.where((user) => user["title"].toLowerCase().contains(enteredKeyword.toLowerCase())).toList();
+      results = it
+          .where((user) => user["title"]
+              .toLowerCase()
+              .contains(enteredKeyword.toLowerCase()))
+          .toList();
       //results = _allUser.where((user) => user["title"].toLowerCase().contains(enteredKeyword.toLowerCase())).toList();
     }
     setState(() {
       itemsList = results;
     });
   }
-
 
   @override
   initState() {
@@ -106,14 +111,15 @@ class _HomePageState extends State<HomePage> {
     // _foundUsers = _allUser;
     super.initState();
     //_refreshItem();
-
   }
+
   @override
   void dispose() {
     record.dispose();
     player.dispose();
     super.dispose();
   }
+
 /**/
   // void showDialog() {
   //   NAlertDialog(
@@ -190,136 +196,159 @@ class _HomePageState extends State<HomePage> {
       content: Container(
         margin: const EdgeInsets.only(top: 1.0),
         child: SizedBox(
-          height: size.height * 0.05,
-          child: const Center(
-            child: Text('Select language',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 28.0),),
-          )
-        ),
+            height: size.height * 0.05,
+            child: const Center(
+              child: Text(
+                'Select language',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 28.0),
+              ),
+            )),
       ),
       actions: <Widget>[
         Column(
           children: [
-            RadioListTile(
-              value: 'Chinese',
-              groupValue: text,
-              //title: const Text('Chinese',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
-              onChanged: (val) {
-                setState(() {
-                  text = val.toString();
-                });
-              },
-              activeColor: Colors.blueAccent,
-              selected: false,
-            ),
-            RadioListTile(
-              value: 'English',
-              groupValue: text,
-             // title: const Text('English',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
-              onChanged: (val) {
-                setState(() {
-                  text = val.toString();
-                });
-              },
-              activeColor: Colors.blueAccent,
-              selected: false,
-            ),
-            RadioListTile(
-              value: 'German',
-              groupValue: text,
-              //title:  const Text('German',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
-              onChanged: (val) {
-                setState(() {
-                  text = val.toString();
-                });
-              },
-              activeColor: Colors.blueAccent,
-              selected: false,
-            ),
-            RadioListTile(
-              value: 'Russian',
-              groupValue: text,
-             // title:  const Text('Russian',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
-              onChanged: (val) {
-                setState(() {
-                  text = val.toString();
-                });
-              },
-              activeColor: Colors.blueAccent,
-              selected: false,
-            ),
-            RadioListTile(
-              value: 'Spanish',
-              groupValue: text,
-              //title:  const Text('Spanish',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
-              onChanged: (val) {
-                setState(() {
-                  text = val.toString();
-                });
-              },
-              activeColor: Colors.blueAccent,
-              selected: false,
-            ),
-            RadioListTile(
-              value: 'Uzbek',
-              groupValue: text,
-             // title:  const Text('Uzbek',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
-              onChanged: (val) {
-                setState(() {
-                  text = val.toString();
-                });
-              },
-              activeColor: Colors.blueAccent,
-              selected: false,
-            ),
-
+            // RadioListTile(
+            //   value: 'Chinese',
+            //   groupValue: text,
+            //   //title: const Text('Chinese',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+            //   onChanged: (val) {
+            //     setState(() {
+            //       text = val.toString();
+            //     });
+            //   },
+            //   activeColor: Colors.blueAccent,
+            //   selected: false,
+            // ),
+            // RadioListTile(
+            //   value: 'English',
+            //   groupValue: text,
+            //   // title: const Text('English',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+            //   onChanged: (val) {
+            //     setState(() {
+            //       text = val.toString();
+            //     });
+            //   },
+            //   activeColor: Colors.blueAccent,
+            //   selected: false,
+            // ),
+            // RadioListTile(
+            //   value: 'German',
+            //   groupValue: text,
+            //   //title:  const Text('German',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+            //   onChanged: (val) {
+            //     setState(() {
+            //       text = val.toString();
+            //     });
+            //   },
+            //   activeColor: Colors.blueAccent,
+            //   selected: false,
+            // ),
+            // RadioListTile(
+            //   value: 'Russian',
+            //   groupValue: text,
+            //   // title:  const Text('Russian',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+            //   onChanged: (val) {
+            //     setState(() {
+            //       text = val.toString();
+            //     });
+            //   },
+            //   activeColor: Colors.blueAccent,
+            //   selected: false,
+            // ),
+            // RadioListTile(
+            //   value: 'Spanish',
+            //   groupValue: text,
+            //   //title:  const Text('Spanish',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+            //   onChanged: (val) {
+            //     setState(() {
+            //       text = val.toString();
+            //     });
+            //   },
+            //   activeColor: Colors.blueAccent,
+            //   selected: false,
+            // ),
+            // RadioListTile(
+            //   value: 'Uzbek',
+            //   groupValue: text,
+            //   // title:  const Text('Uzbek',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18.0),),
+            //   onChanged: (val) {
+            //     setState(() {
+            //       text = val.toString();
+            //     });
+            //   },
+            //   activeColor: Colors.blueAccent,
+            //   selected: false,
+            // ),
             InkWell(
-              onTap: () {
-                Navigator.pop(context);
+              onTap: (){
+                context.setLocale(const Locale('en', 'US'));
+                print(context.locale.toString());
               },
-              child: Container(
-                  height: 38.0,
-                  margin: const EdgeInsets.all(8.0),
-                  padding: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                      color: const Color(0xffff0000),
-                      borderRadius: BorderRadius.circular(4.0),
-                      border: Border.all(
-                        width: 1.4,
-                        color: const Color(0xffff0000),
-                      )),
-                  child: const Center(
-                      child: Text(
-                        "Close",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      ))),
+              child: SizedBox(
+                child: Text('ENGLISH'),
+              ),
             ),
+            SizedBox(height: 20,),
             InkWell(
-              onTap: () {
-                notes = Notes(description: descriptionController.text);
-                HiveService.storeNotes(Notes(description: notes.description));
-                descriptionController.clear();
+              onTap: (){
+                context.setLocale(const Locale('uz', 'UZ'));
+                print(context.locale.toString());
               },
-              child: Container(
-                  height: 38.0,
-                  margin: const EdgeInsets.all(8.0),
-                  padding: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                      color: const Color(0xff0abf53),
-                      borderRadius: BorderRadius.circular(4.0),
-                      border: Border.all(
-                        width: 1.4,
-                        color: const Color(0xff0abf53),
-                      )),
-                  child: const Center(
-                      child: Text("Save",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold)))),
+              child: SizedBox(
+                child: Text('Uzbek'),
+              ),
             ),
+            // InkWell(
+            //   onTap: () {
+            //     Navigator.pop(context);
+            //   },
+            //   child: Container(
+            //       height: 38.0,
+            //       margin: const EdgeInsets.all(8.0),
+            //       padding: const EdgeInsets.all(4.0),
+            //       decoration: BoxDecoration(
+            //           color: const Color(0xffff0000),
+            //           borderRadius: BorderRadius.circular(4.0),
+            //           border: Border.all(
+            //             width: 1.4,
+            //             color: const Color(0xffff0000),
+            //           )),
+            //       child: const Center(
+            //           child: Text(
+            //         "Close",
+            //         style: TextStyle(
+            //             color: Colors.white,
+            //             fontSize: 18,
+            //             fontWeight: FontWeight.bold),
+            //       ))),
+            // ),
+            // InkWell(
+            //   onTap: () {
+            //     notes = Notes(description: descriptionController.text);
+            //     HiveService.storeNotes(Notes(description: notes.description));
+            //     descriptionController.clear();
+            //   },
+            //   child: Container(
+            //       height: 38.0,
+            //       margin: const EdgeInsets.all(8.0),
+            //       padding: const EdgeInsets.all(4.0),
+            //       decoration: BoxDecoration(
+            //           color: const Color(0xff0abf53),
+            //           borderRadius: BorderRadius.circular(4.0),
+            //           border: Border.all(
+            //             width: 1.4,
+            //             color: const Color(0xff0abf53),
+            //           )),
+            //       child: const Center(
+            //           child: Text("Save",
+            //               style: TextStyle(
+            //                   color: Colors.white,
+            //                   fontSize: 18,
+            //                   fontWeight: FontWeight.bold)))),
+            // ),
           ],
         ),
       ],
@@ -328,131 +357,127 @@ class _HomePageState extends State<HomePage> {
 
   void showSwitchModeDialog() {
     NAlertDialog(
-      backgroundColor: Colors.black12,
-      dialogStyle: DialogStyle(titleDivider: true),
-      content: Stack(
-   children: [
-    // AnimatedSwitcher(
-    //   duration: const Duration(milliseconds: 500),
-    //   child: Image.asset(
-    //     Theme.of(context).brightness == Brightness.light
-    //         ? 'assets/images/light.png'
-    //         : 'assets/images/dark.png',
-    //     key: Key(Theme.of(context).brightness.toString()),
-    //   ),
-    // ),
-     /*****/
-    // SizedBox(
-    //   height: 120,
-    //   child: Positioned.fill(
-    //     top: 20,
-    //     child: Align(
-    //       alignment: Alignment.center,
-    //       child:
-    //       Consumer<HomeController>(builder: (context, provider, child) {
-    //         return DropdownButton<String>(
-    //           value: provider.currentTheme,
-    //           items: [
-    //             //Light, dark, and system
-    //             DropdownMenuItem<String>(
-    //               value: 'light',
-    //               child: Text(
-    //                 'Light',
-    //                 style: Theme.of(context).textTheme.titleLarge,
-    //               ),
-    //             ),
-    //             DropdownMenuItem<String>(
-    //               value: 'dark',
-    //               child: Text(
-    //                 'Dark',
-    //                 style: Theme.of(context).textTheme.titleLarge,
-    //               ),
-    //             ),
-    //             DropdownMenuItem<String>(
-    //               value: 'system',
-    //               child: Text(
-    //                 'System',
-    //                 style: Theme.of(context).textTheme.titleLarge,
-    //               ),
-    //             ),
-    //           ],
-    //           onChanged: (String? value) {
-    //             provider.changeTheme(value ?? 'system');
-    //           },
-    //         );
-    //       }),
-    //     ),
-    //   ),
-    // ),
-  ],
-)).show(context);
+        backgroundColor: Colors.black12,
+        dialogStyle: DialogStyle(titleDivider: true),
+        content: Stack(
+          children: [
+            // AnimatedSwitcher(
+            //   duration: const Duration(milliseconds: 500),
+            //   child: Image.asset(
+            //     Theme.of(context).brightness == Brightness.light
+            //         ? 'assets/images/light.png'
+            //         : 'assets/images/dark.png',
+            //     key: Key(Theme.of(context).brightness.toString()),
+            //   ),
+            // ),
+            /*****/
+            // SizedBox(
+            //   height: 120,
+            //   child: Positioned.fill(
+            //     top: 20,
+            //     child: Align(
+            //       alignment: Alignment.center,
+            //       child:
+            //       Consumer<HomeController>(builder: (context, provider, child) {
+            //         return DropdownButton<String>(
+            //           value: provider.currentTheme,
+            //           items: [
+            //             //Light, dark, and system
+            //             DropdownMenuItem<String>(
+            //               value: 'light',
+            //               child: Text(
+            //                 'Light',
+            //                 style: Theme.of(context).textTheme.titleLarge,
+            //               ),
+            //             ),
+            //             DropdownMenuItem<String>(
+            //               value: 'dark',
+            //               child: Text(
+            //                 'Dark',
+            //                 style: Theme.of(context).textTheme.titleLarge,
+            //               ),
+            //             ),
+            //             DropdownMenuItem<String>(
+            //               value: 'system',
+            //               child: Text(
+            //                 'System',
+            //                 style: Theme.of(context).textTheme.titleLarge,
+            //               ),
+            //             ),
+            //           ],
+            //           onChanged: (String? value) {
+            //             provider.changeTheme(value ?? 'system');
+            //           },
+            //         );
+            //       }),
+            //     ),
+            //   ),
+            // ),
+          ],
+        )).show(context);
   }
 
-  Future<void> startRecording()async {
-    try{
-      if(await record.hasPermission()){
+  Future<void> startRecording() async {
+    try {
+      if (await record.hasPermission()) {
         await record.start(const RecordConfig(), path: '');
         setState(() {
           isRecording = true;
         });
       }
-
-    }catch(e){
+    } catch (e) {
       print('ERROR: startRecording in $e');
     }
   }
 
-  Future<void> stopRecording()async {
-    try{
+  Future<void> stopRecording() async {
+    try {
       String? path = await record.stop();
       setState(() {
         isRecording = false;
         audioPath = path!;
       });
-    }catch(e){
+    } catch (e) {
       print('ERROR: stopRecording in $e');
     }
   }
-  Future<void> playRecording()async{
-    try{
+
+  Future<void> playRecording() async {
+    try {
       Source urlSource = UrlSource(audioPath);
       await player.play(urlSource);
-
-    }catch(e){
+    } catch (e) {
       print('ERROR: playRecording in $e');
     }
   }
 
-  void bottomSheetsDialog(){
+  void bottomSheetsDialog() {
     showModalBottomSheet(
       builder: (BuildContext context) {
         return Container(
-          height: 200,
+            height: 200,
             color: Colors.white,
-              child: Column(
-               children: [
-
-                 Row(
-                   children: [
-                     if(isRecording)
-                       Text('Recording in progress'),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    if (isRecording) Text('Recording in progress'),
+                    ElevatedButton(
+                        onPressed: () =>
+                            isRecording ? stopRecording : startRecording,
+                        child: isRecording
+                            ? Text('Stop Recording')
+                            : Text('Start Recording')),
+                    if (!isRecording)
                       ElevatedButton(
-                         onPressed: ()=> isRecording ? stopRecording: startRecording,
-                         child: isRecording ? Text('Stop Recording'):Text('Start Recording')),
-                     if(!isRecording)
-                     ElevatedButton(
-                         onPressed: ()=> playRecording,
-                         child: Text('Play Recording'))
-
-                   ],
-                 )
-
-         ],
-       )
-
-        );
-      }, context:context,
-
+                          onPressed: () => playRecording,
+                          child: Text('Play Recording'))
+                  ],
+                )
+              ],
+            ));
+      },
+      context: context,
     );
   }
 
@@ -499,72 +524,104 @@ class _HomePageState extends State<HomePage> {
               elevation: 29,
               iconSize: 22,
               itemBuilder: (BuildContext context) => [
-                //#Handwriting
-                PopupMenuItem<int>(
-                  height: 50,
-                  value: 3,
-                  child: SizedBox(
-                    height: 50,
-                    width: double.infinity,
-                    child: InkWell(
-                      onTap: () {
-                     Navigator.pushNamed(context, HandWritingPage.id);
-                      },
-                      child: const Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.edit,
-                            size: 24,
-                            color: Colors.black,
-                          ),
-                          SizedBox(width: 5),
-                          // Optional spacing between icon and text
-                          Text(
-                            'Hand writing',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                                fontWeight: FontWeight.normal),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                //#Voice recording
-                PopupMenuItem<int>(
-                  height: 50,
-                  value: 3,
-                  child: SizedBox(
-                    height: 50,
-                    width: double.infinity,
-                    child: InkWell(
-                      onTap: () {
-                        bottomSheetsDialog();
-                      },
-                      child: const Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.mic_none,
-                            size: 24,
-                            color: Colors.black,
-                          ),
-                          SizedBox(width: 5),
-                          // Optional spacing between icon and text
-                          Text(
-                            'Voice recording',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                                fontWeight: FontWeight.normal),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                //#Language
-                PopupMenuItem<int>(
+                    // //#Handwriting
+                    // PopupMenuItem<int>(
+                    //   height: 50,
+                    //   value: 3,
+                    //   child: SizedBox(
+                    //     height: 50,
+                    //     width: double.infinity,
+                    //     child: InkWell(
+                    //       onTap: () {
+                    //         Navigator.pushNamed(context, HandWritingPage.id);
+                    //       },
+                    //       child: const Row(
+                    //         children: <Widget>[
+                    //           Icon(
+                    //             Icons.edit,
+                    //             size: 24,
+                    //             color: Colors.black,
+                    //           ),
+                    //           SizedBox(width: 5),
+                    //           // Optional spacing between icon and text
+                    //           Text(
+                    //             'Hand writing',
+                    //             style: TextStyle(
+                    //                 color: Colors.black,
+                    //                 fontSize: 17,
+                    //                 fontWeight: FontWeight.normal),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // //#Voice recording
+                    // PopupMenuItem<int>(
+                    //   height: 50,
+                    //   value: 3,
+                    //   child: SizedBox(
+                    //     height: 50,
+                    //     width: double.infinity,
+                    //     child: InkWell(
+                    //       onTap: () {
+                    //         bottomSheetsDialog();
+                    //       },
+                    //       child: const Row(
+                    //         children: <Widget>[
+                    //           Icon(
+                    //             Icons.mic_none,
+                    //             size: 24,
+                    //             color: Colors.black,
+                    //           ),
+                    //           SizedBox(width: 5),
+                    //           // Optional spacing between icon and text
+                    //           Text(
+                    //             'Voice recording',
+                    //             style: TextStyle(
+                    //                 color: Colors.black,
+                    //                 fontSize: 17,
+                    //                 fontWeight: FontWeight.normal),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // //#Language
+                    // PopupMenuItem<int>(
+                    //   height: 50,
+                    //   value: 3,
+                    //   child: SizedBox(
+                    //     height: 50,
+                    //     width: double.infinity,
+                    //     child: InkWell(
+                    //       onTap: () {
+                    //         showLanguageDialog();
+                    //       },
+                    //       child: Row(
+                    //         children: const <Widget>[
+                    //           Icon(
+                    //             Icons.language,
+                    //             size: 24,
+                    //             color: Colors.black,
+                    //           ),
+                    //           SizedBox(width: 5),
+                    //           // Optional spacing between icon and text
+                    //           Text(
+                    //             'Language',
+                    //             style: TextStyle(
+                    //                 color: Colors.black,
+                    //                 fontSize: 17,
+                    //                 fontWeight: FontWeight.normal),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    //#Share with friends
+                    PopupMenuItem<int>(
                       height: 50,
                       value: 3,
                       child: SizedBox(
@@ -572,39 +629,9 @@ class _HomePageState extends State<HomePage> {
                         width: double.infinity,
                         child: InkWell(
                           onTap: () {
-                            showLanguageDialog();
-                          },
-                          child: Row(
-                            children: const <Widget>[
-                              Icon(
-                                Icons.language,
-                                size: 24,
-                                color: Colors.black,
-                              ),
-                              SizedBox(width: 5),
-                              // Optional spacing between icon and text
-                              Text(
-                                'Language',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.normal),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                //#Share with friends
-                PopupMenuItem<int>(
-                      height: 50,
-                      value: 3,
-                      child: SizedBox(
-                        height: 50,
-                        width: double.infinity,
-                        child: InkWell(
-                          onTap: () {
-                            Share.share('https://play.google.com/store/apps/details?id=com.daminov.notepad.notepad', subject: 'Subscribe and Rate us!');
+                            Share.share(
+                                'https://play.google.com/store/apps/details?id=com.daminov.notepad.notepad',
+                                subject: 'Subscribe and Rate us!');
                           },
                           child: const Row(
                             children: <Widget>[
@@ -616,7 +643,7 @@ class _HomePageState extends State<HomePage> {
                               SizedBox(width: 5),
                               // Optional spacing between icon and text
                               Text(
-                                'Share with friends',
+                                'Share with friend',
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 17,
@@ -627,307 +654,575 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                //#Rate the app
-                PopupMenuItem<int>(
-                  height: 50,
-                  value: 3,
-                  child: SizedBox(
-                    height: 50,
-                    width: double.infinity,
-                    child: InkWell(
-                      onTap: () {
-                        _launchUrl();
-                      },
-                      child: const Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.star_border,
-                            size: 24,
-                            color: Colors.black,
-                          ),
-                          SizedBox(width: 5),
-                          // Optional spacing between icon and text
-                          Text(
-                            'Rate the app',
-                            style: TextStyle(
+                    //#Rate the app
+                    PopupMenuItem<int>(
+                      height: 50,
+                      value: 3,
+                      child: SizedBox(
+                        height: 50,
+                        width: double.infinity,
+                        child: InkWell(
+                          onTap: () {
+                            _launchUrl();
+                          },
+                          child: const Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.star_border,
+                                size: 24,
                                 color: Colors.black,
-                                fontSize: 17,
-                                fontWeight: FontWeight.normal),
+                              ),
+                              SizedBox(width: 5),
+                              // Optional spacing between icon and text
+                              Text(
+                                'Rate the app',
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.normal),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
                   ])
         ],
       ),
-      body: SingleChildScrollView(
-          child: Column(
-              children: [
-                Container(
-                      padding: const EdgeInsets.only(left: 4.0,right: 4.0,top: 4.0),
-                      height: 42,
-                      child: TextFormField(
-                        style: const TextStyle(color: Colors.black),
-                        decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.all(1.0),
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: Colors.black,
-                            ),
-                            hintText: 'Search notes for title...',
-                            border: OutlineInputBorder()),
-                        onChanged: (value) => _runFilter(value),
-                      ),
-                    ),
-                Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            height: size.height * 0.70,
-                            child: FutureBuilder(
-                              future: Hive.openBox<Notes>('notepad'),
-                              builder: (BuildContext context, AsyncSnapshot<Box<Notes>> snapshot) {
-                                if (snapshot.connectionState == ConnectionState.done) {
-                                  final box = snapshot.data;
-                                  if (box!.isEmpty) {
-                                    return  Center(
-                                        child:SizedBox(
-                                            height: size.height * 0.45,
-                                            width: size.width * 0.65,
-                                            child: const Column(
-                                              children:  [
-                                                Image(image: AssetImage(ImageApp.unnamed),),
-                                                SizedBox(height: 16.0),
-                                                Text('Notes have not created yet!',style: TextStyle(color: Colors.black54,fontWeight: FontWeight.bold,fontSize: 18.0),),
+      body:  Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: SizedBox(
+                // height: size.height * 0.70,
+                child: FutureBuilder(
+                  future: Hive.openBox<Notes>('notepad'),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<Box<Notes>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      final box = snapshot.data;
+                      if (box!.isEmpty) {
+                        return Center(
+                            child: SizedBox(
+                                height: size.height * 0.45,
+                                width: size.width * 0.65,
+                                child:  Column(
+                                  children: [
+                                    const Image(
+                                      image: AssetImage(ImageApp.unnamed),
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                    const Text(
+                                      //'ru',
+                                      'Notes have not created yet!',
+                                      style: TextStyle(
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18.0),
+                                    ).tr(),
+                                  ],
+                                )));
+                      } else {
+                        return ListView.builder(
+                          //reverse: true,
+                          shrinkWrap: true,
+                          // primary: true,
+                          itemCount: box.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final data = box.getAt(index)!;
+                            return InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) {
+                                      return SubHomePage(
+                                        title: data.title ?? '',
+                                        description: data.description ?? '',
+                                        time: data.timeOfTask ?? '',
+                                        dates: data.dateOfTask ?? '',
+                                      );
+                                    }));
+                              },
+                              child: Container(
+                               /// height: size.height * 0.30,
+                                padding: const EdgeInsets.only(
+                                    right: 8.0,
+                                    left: 8.0,
+                                    top: 6.0,
+                                    bottom: 6.0),
+                                margin: const EdgeInsets.only(
+                                    right: 4.0, left: 4.0, top: 6.0),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    color: const Color(0xffbdd3f1)),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                     crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: size.height * 0.025,
+                                          width: double.infinity,
+                                          child: Text(
+                                            data.title ?? '',
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 19.0),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        FittedBox(
+                                          fit:BoxFit.fitHeight,
+                                          child:Text(
+                                            data.description ?? '',
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 16.0),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                   // const Spacer(),
+                                    //#share,edit,delete
+                                    Container(
+                                      height: size.height * 0.038,
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              child: Text(data.dateOfTask ?? '',
+                                                  style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                      FontWeight.bold,
+                                                      fontSize: 19.0),
+                                                  overflow:
+                                                  TextOverflow.ellipsis),
+                                            ),
+                                            const SizedBox(width: 6.0),
+                                            Row(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                              children: [
+                                                SizedBox(
+                                                  height: size.height * 0.04,
+                                                  width: size.width * 0.10,
+                                                  child: Center(
+                                                    child: IconButton(
+                                                        onPressed: () {
+                                                          Share.share(
+                                                              '${data.title ?? ''}, ${data.description ?? ''}',
+                                                              subject:
+                                                              '${data.dateOfTask ?? ''}, ${data.timeOfTask ?? ''}');
+                                                        },
+                                                        icon: const Icon(
+                                                          Icons.share,
+                                                          color: Colors.black,
+                                                          size: 20,
+                                                        )),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 10.0),
+                                                SizedBox(
+                                                  height: size.height * 0.04,
+                                                  width: size.width * 0.10,
+                                                  child: Center(
+                                                    child: IconButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context).push(
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) {
+                                                                    return UpdatePage(
+                                                                      title:
+                                                                      data.title ??
+                                                                          '',
+                                                                      descriptionOfTask:
+                                                                      data.description ??
+                                                                          '',
+                                                                      timeOfTask:
+                                                                      data.timeOfTask ??
+                                                                          '',
+                                                                      dateOfTask:
+                                                                      data.dateOfTask ??
+                                                                          '',
+                                                                      index: index,
+                                                                    );
+                                                                  }));
+                                                        },
+                                                        icon: const Icon(
+                                                          Icons.edit,
+                                                          color: Colors.black,
+                                                          size: 20,
+                                                        )),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 10.0),
+                                                SizedBox(
+                                                  height: size.height * 0.04,
+                                                  width: size.width * 0.10,
+                                                  child: Center(
+                                                    child: IconButton(
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            box.deleteAt(index);
+                                                          });
+                                                        },
+                                                        icon: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.black,
+                                                          size: 20,
+                                                        )),
+                                                  ),
+                                                )
                                               ],
                                             )
-                                        )
-                                    );
-                                  } else {
-                                    return ListView.builder(
-                                        reverse: true,
-                                        shrinkWrap: true,
-                                       // primary: true,
-                                        itemCount: box.length,
-                                        itemBuilder: (BuildContext context, int index) {
-                                          final data = box.getAt(index)!;
-                                          return InkWell(
-                                            onTap: (){
-                                              Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                                                return SubHomePage(
-                                                  title: data.title??'',
-                                                  description: data.description??'',
-                                                  time: data.timeOfTask??'',
-                                                  dates: data.dateOfTask??'',);
-                                              }));
-                                            },
-                                            child: Container(
-                                              height: size.height*0.16,
-                                              width: size.width*0.6,
-                                              padding: const EdgeInsets.only(right: 8.0,left: 8.0,top: 6.0,bottom: 6.0),
-                                              margin: const EdgeInsets.only(right: 4.0,left: 4.0,top: 6.0),
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(8.0),
-                                                  color: const Color(0xffbdd3f1)
-                                              ),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Column(
-                                                    children: [
-                                                      SizedBox(
-                                                        height: size.height*0.030,
-                                                        width: double.infinity,
-                                                        child: Text(data.title??'',
-                                                          style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 19.0),overflow: TextOverflow.ellipsis,),
-                                                      ),
-                                                      const SizedBox(height:16.0),
-                                                      SizedBox(
-                                                        height: size.height*0.030,
-                                                        width: double.infinity,
-                                                        child: Text(data.description??'',
-                                                          style: const TextStyle(color: Colors.black,fontWeight: FontWeight.normal,fontSize: 16.0),overflow: TextOverflow.ellipsis,),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  const SizedBox(height:6.0),
-                                                  //#share,edit,delete
-                                                  Container(
-                                                    height: size.height * 0.048,
-                                                    width: double.infinity,
-                                                    padding: const EdgeInsets.all(2.0),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(4.0),
-                                                    ),
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        //  Container(
-                                                        //      width: size.width * 0.22,
-                                                        //      padding: const EdgeInsets.all(2.0),
-                                                        //      decoration: BoxDecoration(
-                                                        //          borderRadius: BorderRadius.circular(4.0),
-                                                        //          border: Border.all(width: 1.4,color: Colors.red),
-                                                        //          color: Colors.red
-                                                        //      ),
-                                                        //     child: const Text('Deadline:',style: TextStyle(color: Colors.white,fontSize: 18.5,fontWeight: FontWeight.bold),)),
-                                                        // const SizedBox(width: 10.0),
-                                                        SizedBox(
-                                                          child: Text(data.dateOfTask??'',
-                                                              style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
-                                                                  fontSize: 19.0),overflow: TextOverflow.ellipsis),
-
-                                                        ),
-                                                        const SizedBox(width:6.0),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.end,
-                                                          children: [
-                                                            Container(
-                                                              height: size.height * 0.04,
-                                                              width: size.width * 0.10,
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(5.0),
-                                                                border: Border.all(width: 1.4,color: Colors.black),
-                                                                //color: Colors.white
-                                                              ),
-                                                              child: IconButton(
-                                                                  onPressed: (){
-                                                                  },
-                                                                  icon: const Icon(Icons.share,color: Colors.black,size: 20,)),
-                                                            ),
-                                                            const SizedBox(width: 10.0),
-                                                            Container(
-                                                              height: size.height * 0.04,
-                                                              width: size.width * 0.10,
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(5.0),
-                                                                border: Border.all(width: 1.4,color: Colors.black),
-                                                                //color: Colors.white
-                                                              ),
-                                                              child: Center(
-                                                                child: IconButton(
-                                                                    onPressed: (){
-                                                                      Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                                                                        return UpdatePage(
-                                                                          title: data.title??'',
-                                                                          descriptionOfTask: data.description??'',
-                                                                          timeOfTask: data.timeOfTask??'',
-                                                                          dateOfTask: data.dateOfTask??'',
-                                                                          index: index,);
-                                                                      }));
-                                                                    },
-                                                                    icon: const Icon(Icons.edit,color: Colors.black,size: 20,)),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(width: 10.0),
-                                                            Container(
-                                                              height: size.height * 0.04,
-                                                              width: size.width * 0.10,
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(5.0),
-                                                                border: Border.all(width: 1.4,color: Colors.black),
-                                                                //color: Colors.white
-                                                              ),
-                                                              child: Center(
-                                                                child: IconButton(
-                                                                    onPressed: (){
-                                                                      setState(() {
-                                                                        box.deleteAt(index);
-                                                                      });
-
-                                                                    },
-                                                                    icon: const Icon(Icons.delete,color: Colors.black,size: 20,)),
-                                                              ),
-                                                            )
-                                                          ],
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-
-                                            ),
-                                          );
-                                        },
-                                      );
-
-                                  }
-                                } else {
-                                  return const Center(child: CircularProgressIndicator());
-                                }
-                              },
-                            ),
-                          ),
-                          Container(
-                            color: Colors.white,
-                            height: 60.0,
-                            width: double.infinity,
-                            child:Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(12.0),
-                                  width: size.width * 0.70,
-                                  child: TextField(
-                                    controller:descriptionController,
-                                    minLines: 1,
-                                    maxLines: 1,
-                                    keyboardType: TextInputType.multiline,
-                                    decoration: const InputDecoration(
-                                      hintText: 'Enter Quick Task Here:',
-                                    ),
-                                  ),
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    //# google micro
-                                    IconButton(
-                                        onPressed:()async{
-                                          await SpeechToTextGoogleDialog.getInstance().showGoogleDialog(onTextReceived: (data) {
-                                            setState(() {
-                                              descriptionController.text = data.toString();
-                                            });
-                                          });
-                                        },
-                                        icon:const Icon(Icons.mic,color: Colors.black,size: 24,)
-                                    ),
-                                    //#Send data
-                                    IconButton(
-                                        onPressed:(){
-                                          if(descriptionController.text.isNotEmpty){
-                                            notes = Notes(description: descriptionController.text);
-                                            HiveService.storeNotes(Notes(description: notes.description));
-                                            descriptionController.clear();
-                                          }
-                                        },
-                                        icon:const Icon(Icons.send,color: Colors.black,size: 24,)
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          isTrue ? const SizedBox(
-                            height: 60,
-                            child: CustomBannerAd(),
-                          )
-                              :const SizedBox(
-                                     height: 60,
-                                     child: Center(child: Text('Contain ads'),),
-                          )
-                        ],
-                      ),
-              ],
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                ),
+              ),
             ),
+            // Expanded(
+            //   child: Column(
+            //     children: [
+            //       // Container(
+            //       //   padding: const EdgeInsets.only(left: 4.0, right: 4.0, top: 4.0),
+            //       //   height: 42,
+            //       //   child: TextFormField(
+            //       //     style: const TextStyle(color: Colors.black),
+            //       //     decoration: const InputDecoration(
+            //       //         contentPadding: EdgeInsets.all(1.0),
+            //       //         prefixIcon: Icon(
+            //       //           Icons.search,
+            //       //           color: Colors.black,
+            //       //         ),
+            //       //         hintText: 'Search notes for title...',
+            //       //         border: OutlineInputBorder()),
+            //       //     onChanged: (value) => _runFilter(value),
+            //       //   ),
+            //       // ),
+            //       SizedBox(
+            //        // height: size.height * 0.70,
+            //         child: FutureBuilder(
+            //           future: Hive.openBox<Notes>('notepad'),
+            //           builder: (BuildContext context,
+            //               AsyncSnapshot<Box<Notes>> snapshot) {
+            //             if (snapshot.connectionState == ConnectionState.done) {
+            //               final box = snapshot.data;
+            //               if (box!.isEmpty) {
+            //                 return Center(
+            //                     child: SizedBox(
+            //                         height: size.height * 0.45,
+            //                         width: size.width * 0.65,
+            //                         child:  Column(
+            //                           children: [
+            //                             const Image(
+            //                               image: AssetImage(ImageApp.unnamed),
+            //                             ),
+            //                             const SizedBox(height: 16.0),
+            //                              const Text(
+            //                               //'ru',
+            //                               'Notes have not created yet!',
+            //                               style: TextStyle(
+            //                                   color: Colors.black54,
+            //                                   fontWeight: FontWeight.bold,
+            //                                   fontSize: 18.0),
+            //                             ).tr(),
+            //                           ],
+            //                         )));
+            //               } else {
+            //                 return ListView.builder(
+            //                   //reverse: true,
+            //                   shrinkWrap: true,
+            //                   // primary: true,
+            //                   itemCount: box.length,
+            //                   itemBuilder: (BuildContext context, int index) {
+            //                     final data = box.getAt(index)!;
+            //                     return InkWell(
+            //                       onTap: () {
+            //                         Navigator.of(context).push(
+            //                             MaterialPageRoute(builder: (context) {
+            //                           return SubHomePage(
+            //                             title: data.title ?? '',
+            //                             description: data.description ?? '',
+            //                             time: data.timeOfTask ?? '',
+            //                             dates: data.dateOfTask ?? '',
+            //                           );
+            //                         }));
+            //                       },
+            //                       child: Container(
+            //                         height: size.height * 0.16,
+            //                         width: size.width * 0.6,
+            //                         padding: const EdgeInsets.only(
+            //                             right: 8.0,
+            //                             left: 8.0,
+            //                             top: 6.0,
+            //                             bottom: 6.0),
+            //                         margin: const EdgeInsets.only(
+            //                             right: 4.0, left: 4.0, top: 6.0),
+            //                         decoration: BoxDecoration(
+            //                             borderRadius: BorderRadius.circular(8.0),
+            //                             color: const Color(0xffbdd3f1)),
+            //                         child: Column(
+            //                           mainAxisAlignment: MainAxisAlignment.end,
+            //                           crossAxisAlignment:
+            //                               CrossAxisAlignment.start,
+            //                           children: [
+            //                             Column(
+            //                               children: [
+            //                                 SizedBox(
+            //                                   height: size.height * 0.030,
+            //                                   width: double.infinity,
+            //                                   child: Text(
+            //                                     data.title ?? '',
+            //                                     style: const TextStyle(
+            //                                         color: Colors.black,
+            //                                         fontWeight: FontWeight.bold,
+            //                                         fontSize: 19.0),
+            //                                     overflow: TextOverflow.ellipsis,
+            //                                   ),
+            //                                 ),
+            //                                 const SizedBox(height: 16.0),
+            //                                 SizedBox(
+            //                                   height: size.height * 0.030,
+            //                                   width: double.infinity,
+            //                                   child: Text(
+            //                                     data.description ?? '',
+            //                                     style: const TextStyle(
+            //                                         color: Colors.black,
+            //                                         fontWeight: FontWeight.normal,
+            //                                         fontSize: 16.0),
+            //                                     overflow: TextOverflow.ellipsis,
+            //                                   ),
+            //                                 ),
+            //                               ],
+            //                             ),
+            //                             const SizedBox(height: 6.0),
+            //                             //#share,edit,delete
+            //                             Container(
+            //                               height: size.height * 0.048,
+            //                               width: double.infinity,
+            //                               padding: const EdgeInsets.all(2.0),
+            //                               decoration: BoxDecoration(
+            //                                 borderRadius:
+            //                                     BorderRadius.circular(4.0),
+            //                               ),
+            //                               child: Row(
+            //                                 mainAxisAlignment:
+            //                                     MainAxisAlignment.spaceBetween,
+            //                                 crossAxisAlignment:
+            //                                     CrossAxisAlignment.center,
+            //                                 children: [
+            //                                   //  Container(
+            //                                   //      width: size.width * 0.22,
+            //                                   //      padding: const EdgeInsets.all(2.0),
+            //                                   //      decoration: BoxDecoration(
+            //                                   //          borderRadius: BorderRadius.circular(4.0),
+            //                                   //          border: Border.all(width: 1.4,color: Colors.red),
+            //                                   //          color: Colors.red
+            //                                   //      ),
+            //                                   //     child: const Text('Deadline:',style: TextStyle(color: Colors.white,fontSize: 18.5,fontWeight: FontWeight.bold),)),
+            //                                   // const SizedBox(width: 10.0),
+            //                                   SizedBox(
+            //                                     child: Text(data.dateOfTask ?? '',
+            //                                         style: const TextStyle(
+            //                                             color: Colors.black,
+            //                                             fontWeight:
+            //                                                 FontWeight.bold,
+            //                                             fontSize: 19.0),
+            //                                         overflow:
+            //                                             TextOverflow.ellipsis),
+            //                                   ),
+            //                                   const SizedBox(width: 6.0),
+            //                                   Row(
+            //                                     mainAxisAlignment:
+            //                                         MainAxisAlignment.end,
+            //                                     children: [
+            //                                       SizedBox(
+            //                                         height: size.height * 0.04,
+            //                                         width: size.width * 0.10,
+            //                                         child: Center(
+            //                                           child: IconButton(
+            //                                               onPressed: () {
+            //                                                 Share.share(
+            //                                                     '${data.title ?? ''}, ${data.description ?? ''}',
+            //                                                     subject:
+            //                                                         '${data.dateOfTask ?? ''}, ${data.timeOfTask ?? ''}');
+            //                                               },
+            //                                               icon: const Icon(
+            //                                                 Icons.share,
+            //                                                 color: Colors.black,
+            //                                                 size: 20,
+            //                                               )),
+            //                                         ),
+            //                                       ),
+            //                                       const SizedBox(width: 10.0),
+            //                                       SizedBox(
+            //                                         height: size.height * 0.04,
+            //                                         width: size.width * 0.10,
+            //                                         child: Center(
+            //                                           child: IconButton(
+            //                                               onPressed: () {
+            //                                                 Navigator.of(context).push(
+            //                                                     MaterialPageRoute(
+            //                                                         builder:
+            //                                                             (context) {
+            //                                                   return UpdatePage(
+            //                                                     title:
+            //                                                         data.title ??
+            //                                                             '',
+            //                                                     descriptionOfTask:
+            //                                                         data.description ??
+            //                                                             '',
+            //                                                     timeOfTask:
+            //                                                         data.timeOfTask ??
+            //                                                             '',
+            //                                                     dateOfTask:
+            //                                                         data.dateOfTask ??
+            //                                                             '',
+            //                                                     index: index,
+            //                                                   );
+            //                                                 }));
+            //                                               },
+            //                                               icon: const Icon(
+            //                                                 Icons.edit,
+            //                                                 color: Colors.black,
+            //                                                 size: 20,
+            //                                               )),
+            //                                         ),
+            //                                       ),
+            //                                       const SizedBox(width: 10.0),
+            //                                       SizedBox(
+            //                                         height: size.height * 0.04,
+            //                                         width: size.width * 0.10,
+            //                                         child: Center(
+            //                                           child: IconButton(
+            //                                               onPressed: () {
+            //                                                 setState(() {
+            //                                                   box.deleteAt(index);
+            //                                                 });
+            //                                               },
+            //                                               icon: const Icon(
+            //                                                 Icons.delete,
+            //                                                 color: Colors.black,
+            //                                                 size: 20,
+            //                                               )),
+            //                                         ),
+            //                                       )
+            //                                     ],
+            //                                   )
+            //                                 ],
+            //                               ),
+            //                             ),
+            //                           ],
+            //                         ),
+            //                       ),
+            //                     );
+            //                   },
+            //                 );
+            //               }
+            //             } else {
+            //               return const Center(child: CircularProgressIndicator());
+            //             }
+            //           },
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            Container(
+              color: Colors.white,
+              height: 60.0,
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(2.0),
+                    width: size.width * 0.70,
+                    child: TextField(
+                      controller: descriptionController,
+                      // minLines: 1,
+                      // maxLines: 1,
+                      // keyboardType: TextInputType.multiline,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter Quick Task Here:',
+                      ),
+                    ),
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      //# google micro
+                      IconButton(
+                          onPressed: () async {
+                            await SpeechToTextGoogleDialog.getInstance()
+                                .showGoogleDialog(onTextReceived: (data) {
+                              setState(() {
+                                descriptionController.text =
+                                    data.toString();
+                              });
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.mic,
+                            color: Colors.black,
+                            size: 24,
+                          )),
+                      //#Send data
+                      IconButton(
+                          onPressed: () {
+                            if (descriptionController.text.isNotEmpty) {
+                              notes = Notes(
+                                  description: descriptionController.text);
+                              HiveService.storeNotes(
+                                  Notes(description: notes.description));
+                              descriptionController.clear();
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.send,
+                            color: Colors.black,
+                            size: 24,
+                          )),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
+
+      // bottomNavigationBar: const SizedBox(
+      //   height: 60,
+      //   child: CustomBannerAd(),
+      // ),
       floatingActionButton: Align(
-          alignment: const Alignment(0.9, 0.7),
+          alignment: const Alignment(0.9, 0.85),
           child: FloatingActionButton(
             backgroundColor: Colors.white,
             onPressed: () {
@@ -943,6 +1238,4 @@ class _HomePageState extends State<HomePage> {
           )),
     );
   }
-
-
 }
