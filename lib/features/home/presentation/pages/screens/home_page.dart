@@ -1217,10 +1217,10 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
 
-      // bottomNavigationBar: const SizedBox(
-      //   height: 60,
-      //   child: CustomBannerAd(),
-      // ),
+      bottomNavigationBar: const SizedBox(
+        height: 60,
+        child: CustomBannerAd(),
+      ),
       floatingActionButton: Align(
           alignment: const Alignment(0.9, 0.85),
           child: FloatingActionButton(
